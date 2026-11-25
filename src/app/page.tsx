@@ -11,23 +11,23 @@ export default function HomePage() {
 
       {/* Topographic Editorial Intro Banner */}
       <div className="topo-banner border-b border-[#E2DCCE]">
-        <div className="max-w-[1440px] w-full mx-auto px-4 sm:px-6 py-5 sm:py-6 flex flex-col lg:flex-row lg:items-end justify-between gap-3">
+        <div className="max-w-[1440px] w-full mx-auto px-3 sm:px-6 py-3.5 sm:py-6 flex flex-col lg:flex-row lg:items-end justify-between gap-2.5 sm:gap-3">
           <div>
-            <div className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#1D523B]">
+            <div className="inline-flex items-center gap-2 text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.14em] text-[#1D523B]">
               <span className="w-1.5 h-1.5 rounded-full bg-[#276E4F]" />
               <span>Live Provincial Forestry Atlas · British Columbia</span>
             </div>
-            <h1 className="font-serif text-2xl sm:text-[2rem] font-semibold text-[#11241C] tracking-tight mt-1 leading-tight">
+            <h1 className="font-serif text-xl sm:text-[2rem] font-semibold text-[#11241C] tracking-tight mt-1 leading-tight">
               BC Logging &amp; Standing Forest Explorer
             </h1>
-            <p className="text-sm text-stone-600 mt-1.5 max-w-3xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-stone-600 mt-1 sm:mt-1.5 max-w-3xl leading-relaxed">
               Explore proposed, pending, active, and past logging across British
               Columbia alongside standing forest age, tree height, and protected
               areas. Click anywhere on the map or pick an open proposal to
               review.
             </p>
           </div>
-          <div className="text-[11px] text-stone-600 bg-white/75 backdrop-blur-sm border border-[#DDD7C9] rounded-lg px-3 py-1.5 self-start lg:self-auto shrink-0">
+          <div className="hidden sm:block text-[11px] text-stone-600 bg-white/75 backdrop-blur-sm border border-[#DDD7C9] rounded-lg px-3 py-1.5 self-start lg:self-auto shrink-0">
             Updated live from BC Government records · 8 Official Forestry
             Regions
           </div>
@@ -35,7 +35,7 @@ export default function HomePage() {
       </div>
 
       {/* Main 3-Pane Explorer + Provincial Context */}
-      <main className="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-6 pt-5 pb-10">
+      <main className="flex-1 max-w-[1440px] w-full mx-auto px-3 sm:px-6 pt-3.5 sm:pt-5 pb-8 sm:pb-10">
         <ForestryMapExplorer />
         <BroaderPerspectiveSection />
       </main>

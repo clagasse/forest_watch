@@ -40,6 +40,9 @@ import {
   Flame,
   HelpCircle,
   Link2,
+  Map as MapIcon,
+  List,
+  FileText,
 } from "lucide-react";
 import InfoTooltip from "@/components/InfoTooltip";
 
@@ -459,7 +462,25 @@ export default function ForestryMapExplorer() {
   const [layersOpen, setLayersOpen] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
   const [legendOpen, setLegendOpen] = useState(true);
+  const [mobilePane, setMobilePane] = useState<"map" | "proposals" | "details">(
+    "map"
+  );
+  const [mobileBannerDismissed, setMobileBannerDismissed] = useState(false);
   const [overlayOpacity, setOverlayOpacity] = useState<number>(0.82);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      setLegendOpen(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (mobilePane === "map") {
+      requestAnimationFrame(() => {
+        mapRef.current?.resize();
+      });
+    }
+  }, [mobilePane]);
   const [selectedRegionId, setSelectedRegionId] = useState<string>("all-bc");
   const [mapZoom, setMapZoom] = useState<number>(5.3);
 
@@ -787,6 +808,7 @@ export default function ForestryMapExplorer() {
           z: mapRef.current?.getZoom() ?? 12.2,
         });
       }
+      setMobileBannerDismissed(false);
       setInspectLoading(true);
       setOverlapIndex(0);
       updateMapHighlight(null, [lng, lat]);
@@ -1279,6 +1301,10 @@ export default function ForestryMapExplorer() {
   const handleSelectFomProject = useCallback(
     async (project: FomProjectSummary) => {
       syncUrlParams({ fomId: project.fomId });
+      setMobileBannerDismissed(false);
+      if (typeof window !== "undefined" && window.innerWidth < 1024) {
+        setMobilePane("map");
+      }
       setSelectedFomProject(project);
       setInspectLoading(true);
       setOverlapIndex(0);
@@ -1518,10 +1544,10 @@ export default function ForestryMapExplorer() {
       {/* ===================================================================
           COMPACT WORKSPACE TOOLBAR (LIFECYCLE FILTERS + REGION + BASEMAP + LAYERS)
          =================================================================== */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-white border border-[#DDD7C9] rounded-xl px-4 py-2.5 shadow-[0_1px_3px_rgba(16,42,32,0.05)]">
+      <div className="flex flex-col lg:flex-row lg:flex-wrap lg:items-center justify-between gap-2.5 lg:gap-3 bg-white border border-[#DDD7C9] rounded-xl px-3 sm:px-4 py-2.5 shadow-[0_1px_3px_rgba(16,42,32,0.05)]">
         {/* Left: Cutblock Lifecycle Stage Checkboxes */}
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="inline-flex items-center gap-1 text-[11px] font-medium uppercase tracking-wider text-stone-500 mr-1">
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5 -mx-1 px-1 flex-nowrap sm:flex-wrap w-full lg:w-auto">
+          <span className="inline-flex items-center gap-1 text-[11px] font-medium uppercase tracking-wider text-stone-500 mr-1 shrink-0">
             <span>Cutblocks:</span>
             <InfoTooltip
               label="About logging stages"
@@ -1546,7 +1572,7 @@ export default function ForestryMapExplorer() {
                 fom_proposed: !p.fom_proposed,
               }))
             }
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border transition-all ${
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:py-1 rounded-lg text-xs font-medium border transition-all shrink-0 ${
               stageVisibility.fom_proposed
                 ? "bg-[#0369a1] text-white border-[#0369a1] shadow-sm"
                 : "bg-white/70 text-stone-500 border-stone-300 border-dashed hover:border-stone-400 hover:text-stone-800 hover:bg-[#F8F5EE]"
@@ -1574,7 +1600,7 @@ export default function ForestryMapExplorer() {
                 ften_pending: !p.ften_pending,
               }))
             }
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border transition-all ${
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:py-1 rounded-lg text-xs font-medium border transition-all shrink-0 ${
               stageVisibility.ften_pending
                 ? "bg-[#b45309] text-white border-[#b45309] shadow-sm"
                 : "bg-white/70 text-stone-500 border-stone-300 border-dashed hover:border-stone-400 hover:text-stone-800 hover:bg-[#F8F5EE]"
@@ -1602,7 +1628,7 @@ export default function ForestryMapExplorer() {
                 ften_active: !p.ften_active,
               }))
             }
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border transition-all ${
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:py-1 rounded-lg text-xs font-medium border transition-all shrink-0 ${
               stageVisibility.ften_active
                 ? "bg-[#c2410c] text-white border-[#c2410c] shadow-sm"
                 : "bg-white/70 text-stone-500 border-stone-300 border-dashed hover:border-stone-400 hover:text-stone-800 hover:bg-[#F8F5EE]"
@@ -1630,7 +1656,7 @@ export default function ForestryMapExplorer() {
                 completed: !p.completed,
               }))
             }
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border transition-all ${
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:py-1 rounded-lg text-xs font-medium border transition-all shrink-0 ${
               stageVisibility.completed
                 ? "bg-[#b91c1c] text-white border-[#b91c1c] shadow-sm"
                 : "bg-white/70 text-stone-500 border-stone-300 border-dashed hover:border-stone-400 hover:text-stone-800 hover:bg-[#F8F5EE]"
@@ -1651,7 +1677,7 @@ export default function ForestryMapExplorer() {
               onChange={(e) =>
                 setCompletedSince(e.target.value as CompletedTimeframe)
               }
-              className="bg-rose-50 text-rose-950 text-xs font-medium px-2 py-1 rounded-lg border border-rose-300 focus:outline-none"
+              className="bg-rose-50 text-rose-950 text-xs font-medium px-2 py-1.5 sm:py-1 rounded-lg border border-rose-300 focus:outline-none shrink-0"
             >
               <option value="2020">2020–Present</option>
               <option value="2015">2015–Present</option>
@@ -1661,12 +1687,12 @@ export default function ForestryMapExplorer() {
         </div>
 
         {/* Right: Region Jump, Basemap Switcher, Forest & Data Layers Popover */}
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 sm:gap-2.5 w-full lg:w-auto">
           <select
             aria-label="Jump to BC region"
             value={selectedRegionId}
             onChange={(e) => handleJumpToRegion(e.target.value)}
-            className="bg-[#FAF8F4] text-stone-800 text-xs font-medium px-3 py-1.5 rounded-lg border border-stone-200 focus:outline-none focus:border-emerald-700"
+            className="col-span-2 sm:col-span-1 w-full sm:w-auto min-h-[36px] bg-[#FAF8F4] text-stone-800 text-xs font-medium px-3 py-1.5 rounded-lg border border-stone-200 focus:outline-none focus:border-emerald-700"
           >
             {BC_REGION_BOOKMARKS.map((r) => (
               <option key={r.id} value={r.id}>
@@ -1675,12 +1701,12 @@ export default function ForestryMapExplorer() {
             ))}
           </select>
 
-          <div className="flex items-center gap-0.5 bg-[#FAF8F4] border border-stone-200 p-0.5 rounded-lg">
+          <div className="col-span-2 sm:col-span-1 grid grid-cols-3 sm:flex items-center gap-0.5 bg-[#FAF8F4] border border-stone-200 p-0.5 rounded-lg">
             {(Object.keys(BASEMAPS) as BasemapId[]).map((bmKey) => (
               <button
                 key={bmKey}
                 onClick={() => setBasemap(bmKey)}
-                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+                className={`px-2.5 py-1.5 sm:py-1 rounded-md text-xs font-medium transition-colors text-center ${
                   basemap === bmKey
                     ? "bg-white text-stone-900 shadow-sm border border-stone-200/80"
                     : "text-stone-600 hover:text-stone-900"
@@ -1694,7 +1720,7 @@ export default function ForestryMapExplorer() {
           <div className="relative" ref={layersPopoverRef}>
             <button
               onClick={() => setLayersOpen((o) => !o)}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+              className={`w-full sm:w-auto min-h-[36px] inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
                 layersOpen
                   ? "bg-[#143929] text-white border-[#143929]"
                   : "bg-[#F8F5EE] text-stone-800 border-[#D8D1C2] hover:bg-[#F2EDE2]"
@@ -1720,7 +1746,12 @@ export default function ForestryMapExplorer() {
             </button>
 
             {layersOpen && (
-              <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white border border-stone-200 shadow-xl rounded-xl p-4 z-40 space-y-4 max-h-[80vh] overflow-y-auto">
+              <>
+                <div
+                  className="fixed inset-0 bg-black/25 z-40 sm:hidden"
+                  onClick={() => setLayersOpen(false)}
+                />
+                <div className="fixed inset-x-3 bottom-3 sm:absolute sm:inset-x-auto sm:bottom-auto sm:right-0 sm:mt-2 sm:w-96 bg-white border border-stone-200 shadow-2xl sm:shadow-xl rounded-2xl sm:rounded-xl p-4 z-50 space-y-4 max-h-[75dvh] sm:max-h-[80vh] overflow-y-auto">
                 <div className="flex items-center justify-between border-b border-stone-100 pb-2 gap-2">
                   <span className="text-xs font-semibold text-stone-900">
                     Forest, Conservation &amp; Boundary Layers
@@ -1947,13 +1978,14 @@ export default function ForestryMapExplorer() {
                   )}
                 </div>
               </div>
+              </>
             )}
           </div>
 
           <button
             type="button"
             onClick={() => setGuideOpen((g) => !g)}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+            className={`w-full sm:w-auto min-h-[36px] inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
               guideOpen
                 ? "bg-[#143929] text-white border-[#143929]"
                 : "bg-[#F8F5EE] text-stone-800 border-[#D8D1C2] hover:bg-[#F2EDE2]"
@@ -2054,12 +2086,76 @@ export default function ForestryMapExplorer() {
         </div>
       )}
 
+      {/* Sticky Mobile Pane Switcher */}
+      <div className="grid grid-cols-3 gap-1 bg-white border border-[#DDD7C9] p-1 rounded-xl shadow-sm lg:hidden sticky top-[60px] z-30">
+        <button
+          type="button"
+          onClick={() => setMobilePane("map")}
+          className={`inline-flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-colors ${
+            mobilePane === "map"
+              ? "bg-[#143929] text-white shadow-sm"
+              : "text-stone-600 hover:text-stone-900"
+          }`}
+        >
+          <MapIcon className="w-3.5 h-3.5 shrink-0" />
+          <span>Map</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setMobilePane("proposals")}
+          className={`inline-flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-colors ${
+            mobilePane === "proposals"
+              ? "bg-[#143929] text-white shadow-sm"
+              : "text-stone-600 hover:text-stone-900"
+          }`}
+        >
+          <List className="w-3.5 h-3.5 shrink-0" />
+          <span>Proposals</span>
+          <span
+            className={`text-[10px] px-1.5 py-0.2 rounded-full tabular-nums ${
+              mobilePane === "proposals"
+                ? "bg-white/20 text-white"
+                : "bg-[#F2EDE2] text-stone-700"
+            }`}
+          >
+            {filteredFomProjects.length}
+          </span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setMobilePane("details")}
+          className={`inline-flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-colors ${
+            mobilePane === "details"
+              ? "bg-[#143929] text-white shadow-sm"
+              : "text-stone-600 hover:text-stone-900"
+          }`}
+        >
+          <FileText className="w-3.5 h-3.5 shrink-0" />
+          <span>Details</span>
+          {(inspectResult || inspectLoading) && (
+            <span
+              className={`w-2 h-2 rounded-full shrink-0 ${
+                inspectLoading
+                  ? "bg-amber-400 animate-pulse"
+                  : mobilePane === "details"
+                  ? "bg-emerald-300"
+                  : "bg-emerald-600"
+              }`}
+            />
+          )}
+        </button>
+      </div>
+
       {/* ===================================================================
           3-PANE WORKSPACE: LIVE BC FOM FEED | BC-WIDE MAP | LIVE INSPECTOR
          =================================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-[300px_minmax(0,1fr)_340px] gap-4">
         {/* LEFT PANE: Open Logging Proposals */}
-        <aside className="bg-white border border-[#DDD7C9] border-t-2 border-t-[#1B4332] rounded-xl flex flex-col lg:h-[680px] overflow-hidden shadow-[0_1px_4px_rgba(16,42,32,0.05)]">
+        <aside
+          className={`${
+            mobilePane === "proposals" ? "flex" : "hidden"
+          } lg:flex bg-white border border-[#DDD7C9] border-t-2 border-t-[#1B4332] rounded-xl flex-col h-[70dvh] min-h-[440px] lg:h-[680px] overflow-hidden shadow-[0_1px_4px_rgba(16,42,32,0.05)]`}
+        >
           <div className="px-4 py-3 border-b border-[#E3DDD0] bg-[#F4F0E6]/85 space-y-2.5">
             <div className="flex items-center justify-between">
               <div className="inline-flex items-center gap-1.5">
@@ -2315,7 +2411,11 @@ export default function ForestryMapExplorer() {
         </aside>
 
         {/* CENTER PANE: BC-Wide Live Map */}
-        <div className="relative h-[460px] lg:h-[680px] rounded-xl overflow-hidden border border-[#CFC8B8] bg-[#EFECE2] shadow-[0_2px_10px_rgba(16,42,32,0.07)]">
+        <div
+          className={`${
+            mobilePane === "map" ? "block" : "hidden"
+          } lg:block relative h-[62dvh] min-h-[420px] lg:h-[680px] rounded-xl overflow-hidden border border-[#CFC8B8] bg-[#EFECE2] shadow-[0_2px_10px_rgba(16,42,32,0.07)]`}
+        >
           <div ref={mapContainerRef} className="w-full h-full" />
 
           {showVriZoomHint && (
@@ -2328,7 +2428,11 @@ export default function ForestryMapExplorer() {
           <div
             onClick={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
-            className="absolute bottom-3 right-3 z-20 max-w-[275px] bg-[#FAF8F2]/95 backdrop-blur-sm border border-[#DDD7C9] rounded-xl shadow-md text-[11px] text-stone-700 pointer-events-auto overflow-hidden"
+            className={`absolute right-3 z-20 max-w-[calc(100%-24px)] sm:max-w-[275px] bg-[#FAF8F2]/95 backdrop-blur-sm border border-[#DDD7C9] rounded-xl shadow-md text-[11px] text-stone-700 pointer-events-auto overflow-hidden transition-all ${
+              (inspectResult || inspectLoading) && !mobileBannerDismissed
+                ? "bottom-[84px] lg:bottom-3"
+                : "bottom-3"
+            }`}
           >
             <button
               type="button"
@@ -2457,10 +2561,99 @@ export default function ForestryMapExplorer() {
               </div>
             )}
           </div>
+
+          {/* Mobile Floating Inspection Preview Bar */}
+          {(inspectLoading || inspectResult) && !mobileBannerDismissed && (
+            <div
+              onClick={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+              className="lg:hidden absolute bottom-3 inset-x-3 z-20 bg-white/95 backdrop-blur-sm border border-[#DDD7C9] rounded-xl shadow-lg px-3 py-2.5 flex items-center justify-between gap-2 pointer-events-auto"
+            >
+              {inspectLoading ? (
+                <div className="flex items-center gap-2 text-xs text-stone-700 font-medium">
+                  <Loader2 className="w-4 h-4 text-[#143929] animate-spin shrink-0" />
+                  <span>Inspecting forest records...</span>
+                </div>
+              ) : inspectResult ? (
+                <>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        className="w-2 h-2 rounded-full shrink-0"
+                        style={{
+                          backgroundColor:
+                            RISK_BADGE_STYLES[
+                              inspectResult.riskAssessment?.category ||
+                                "unassessed"
+                            ].dotColor,
+                        }}
+                      />
+                      <span className="text-[11px] font-semibold text-stone-900 truncate">
+                        {
+                          RISK_BADGE_STYLES[
+                            inspectResult.riskAssessment?.category ||
+                              "unassessed"
+                          ].shortLabel
+                        }
+                        {inspectResult.forest?.standAgeYears
+                          ? ` · ${inspectResult.forest.standAgeYears} yrs`
+                          : ""}
+                      </span>
+                    </div>
+                    <div className="text-xs text-stone-600 truncate mt-0.5">
+                      {selectedFomProject?.name ||
+                        activeCutblock?.name ||
+                        (inspectResult.forest?.dominantSpecies
+                          ? `Standing Forest (${inspectResult.forest.dominantSpecies})`
+                          : `${inspectResult.coordinates[1].toFixed(3)}, ${inspectResult.coordinates[0].toFixed(3)}`)}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setMobilePane("details")}
+                      className="px-2.5 py-1.5 rounded-lg bg-[#143929] text-white text-xs font-semibold hover:bg-[#1D523B] transition-colors"
+                    >
+                      Full Details &rarr;
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setMobileBannerDismissed(true)}
+                      aria-label="Dismiss preview"
+                      className="p-1 text-stone-400 hover:text-stone-700"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                </>
+              ) : null}
+            </div>
+          )}
         </div>
 
         {/* RIGHT PANE: Live Cutblock + Standing Forest Properties Inspector */}
-        <aside className="bg-white border border-[#DDD7C9] border-t-2 border-t-[#1B4332] rounded-xl p-5 lg:h-[680px] overflow-y-auto flex flex-col justify-between shadow-[0_1px_4px_rgba(16,42,32,0.05)]">
+        <aside
+          className={`${
+            mobilePane === "details" ? "flex" : "hidden"
+          } lg:flex bg-white border border-[#DDD7C9] border-t-2 border-t-[#1B4332] rounded-xl p-4 sm:p-5 min-h-[420px] lg:h-[680px] overflow-y-auto flex-col justify-between shadow-[0_1px_4px_rgba(16,42,32,0.05)]`}
+        >
+          <div className="lg:hidden mb-3 pb-2 border-b border-stone-100 flex items-center justify-between">
+            <button
+              type="button"
+              onClick={() => setMobilePane("map")}
+              className="inline-flex items-center gap-1 text-xs font-medium text-[#143929] hover:underline"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+              <span>Back to Map</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setMobilePane("proposals")}
+              className="text-xs font-medium text-stone-500 hover:text-stone-800"
+            >
+              Browse Proposals &rarr;
+            </button>
+          </div>
           {inspectLoading ? (
             <div className="flex flex-col items-center justify-center flex-1 text-center py-12 space-y-2.5">
               <Loader2 className="w-5 h-5 text-emerald-800 animate-spin" />

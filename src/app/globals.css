@@ -6,10 +6,24 @@
   color-scheme: light;
 }
 
+html,
+body {
+  overflow-x: clip;
+}
+
 body {
   background-color: #f7f4ec;
   color: #1a201d;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 .topo-banner {

@@ -51,7 +51,7 @@ export default function InfoTooltip({
     const el = triggerRef.current;
     if (!el || typeof window === "undefined") return;
     const rect = el.getBoundingClientRect();
-    const popoverWidth = 256; // w-64
+    const popoverWidth = Math.min(256, window.innerWidth - 24);
     const margin = 12;
     const rawLeft = rect.left + rect.width / 2 - popoverWidth / 2;
     const clampedLeft = Math.max(
@@ -71,13 +71,19 @@ export default function InfoTooltip({
     }
   };
 
+  const supportsHover = () =>
+    typeof window !== "undefined" &&
+    window.matchMedia("(hover: hover)").matches;
+
   const handleOpen = () => {
+    if (!supportsHover()) return;
     clearCloseTimer();
     updatePosition();
     setOpen(true);
   };
 
   const handleDelayedClose = () => {
+    if (!supportsHover()) return;
     clearCloseTimer();
     closeTimerRef.current = setTimeout(() => {
       setOpen(false);
@@ -87,7 +93,7 @@ export default function InfoTooltip({
   useEffect(() => {
     if (!open) return;
 
-    const handleOutsideClick = (e: MouseEvent) => {
+    const handleOutsideClick = (e: MouseEvent | TouchEvent) => {
       const target = e.target as Node;
       if (
         triggerRef.current?.contains(target) ||
@@ -107,12 +113,16 @@ export default function InfoTooltip({
     };
 
     document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("touchstart", handleOutsideClick, {
+      passive: true,
+    });
     document.addEventListener("keydown", handleEscape);
     window.addEventListener("scroll", handleViewportChange, true);
     window.addEventListener("resize", handleViewportChange);
 
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("touchstart", handleOutsideClick);
       document.removeEventListener("keydown", handleEscape);
       window.removeEventListener("scroll", handleViewportChange, true);
       window.removeEventListener("resize", handleViewportChange);
@@ -130,7 +140,11 @@ export default function InfoTooltip({
         aria-expanded={open}
         onMouseEnter={handleOpen}
         onMouseLeave={handleDelayedClose}
-        onFocus={handleOpen}
+        onFocus={() => {
+          clearCloseTimer();
+          updatePosition();
+          setOpen(true);
+        }}
         onBlur={handleDelayedClose}
         onClick={(e) => {
           e.stopPropagation();
@@ -142,7 +156,7 @@ export default function InfoTooltip({
             setOpen(false);
           }
         }}
-        className="inline-flex items-center justify-center rounded-full text-stone-400 hover:text-[#143929] focus:text-[#143929] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#143929]/40 transition-colors align-middle shrink-0"
+        className="inline-flex items-center justify-center p-1 -m-1 rounded-full text-stone-400 hover:text-[#143929] focus:text-[#143929] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#143929]/40 transition-colors align-middle shrink-0"
       >
         <HelpCircle className={sizeClass} />
       </button>
@@ -154,13 +168,16 @@ export default function InfoTooltip({
           <div
             ref={popoverRef}
             role="tooltip"
-            onMouseEnter={clearCloseTimer}
+            onMouseEnter={() => {
+              if (supportsHover()) clearCloseTimer();
+            }}
             onMouseLeave={handleDelayedClose}
             onClick={(e) => e.stopPropagation()}
             style={{
               position: "fixed",
               top: coords.top,
               left: coords.left,
+              maxWidth: "calc(100vw - 24px)",
               transform: coords.placeBelow ? "none" : "translateY(-100%)",
             }}
             className="w-64 bg-[#102A20] text-[#F7F4EC] border border-[#295240] rounded-lg px-3 py-2.5 shadow-xl text-[11px] leading-relaxed z-[9999]"

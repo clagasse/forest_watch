@@ -353,10 +353,10 @@ export default function BroaderPerspectiveSection() {
           </p>
         </div>
 
-        <div className="inline-flex items-center bg-white border border-[#DDD7C9] p-1 rounded-xl shadow-[0_1px_3px_rgba(16,42,32,0.05)] self-start sm:self-auto">
+        <div className="grid grid-cols-2 sm:inline-flex items-center bg-white border border-[#DDD7C9] p-1 rounded-xl shadow-[0_1px_3px_rgba(16,42,32,0.05)] w-full sm:w-auto">
           <button
             onClick={() => setViewMode("bc-wide")}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors text-center ${
               viewMode === "bc-wide"
                 ? "bg-[#143929] text-white shadow-sm"
                 : "text-stone-600 hover:text-stone-900"
@@ -366,7 +366,7 @@ export default function BroaderPerspectiveSection() {
           </button>
           <button
             onClick={() => setViewMode("regional")}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors text-center ${
               viewMode === "regional"
                 ? "bg-[#143929] text-white shadow-sm"
                 : "text-stone-600 hover:text-stone-900"
@@ -692,7 +692,7 @@ export default function BroaderPerspectiveSection() {
       ) : (
         <div className="space-y-5">
           {/* Regional Pill Selector */}
-          <div className="flex flex-wrap items-center gap-1.5">
+          <div className="flex overflow-x-auto sm:flex-wrap items-center gap-1.5 pb-1 -mx-1 px-1 no-scrollbar">
             {BC_NATURAL_RESOURCE_REGIONS.map((reg) => {
               const isSelected = selectedRegionId === reg.id;
               const liveRow = regionalSummaries.rows.find(
@@ -703,7 +703,7 @@ export default function BroaderPerspectiveSection() {
                 <button
                   key={reg.id}
                   onClick={() => setSelectedRegionId(reg.id)}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors shrink-0 ${
                     isSelected
                       ? "bg-[#143929] text-white border-[#143929]"
                       : "bg-white text-stone-700 border-[#DDD7C9] hover:text-stone-900 hover:bg-[#F8F5EE]"
@@ -914,20 +914,20 @@ export default function BroaderPerspectiveSection() {
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
                   <tr className="border-b border-[#DDD7C9] text-stone-600 bg-[#F2EDE2] text-[10px] uppercase tracking-wider">
-                    <th className="py-2.5 px-4 font-semibold">Forestry Region</th>
-                    <th className="py-2.5 px-3 font-semibold">
+                    <th className="py-2.5 px-2.5 sm:px-4 font-semibold">Forestry Region</th>
+                    <th className="hidden md:table-cell py-2.5 px-3 font-semibold">
                       Local Districts
                     </th>
-                    <th className="py-2.5 px-3 font-semibold text-right">
+                    <th className="py-2.5 px-2 sm:px-3 font-semibold text-right">
                       Open / Total
                     </th>
-                    <th className="py-2.5 px-3 font-semibold text-right">
+                    <th className="py-2.5 px-2 sm:px-3 font-semibold text-right">
                       Blocks &amp; Area
                     </th>
-                    <th className="py-2.5 px-3 font-semibold text-right">
+                    <th className="py-2.5 px-2.5 sm:px-3 font-semibold text-right">
                       Very High / High
                     </th>
-                    <th className="py-2.5 px-4 font-semibold">Forest Types</th>
+                    <th className="hidden md:table-cell py-2.5 px-4 font-semibold">Forest Types</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-stone-100">
@@ -948,7 +948,7 @@ export default function BroaderPerspectiveSection() {
                         }`}
                       >
                         <td
-                          className={`py-2.5 px-4 font-medium text-stone-900 border-l-[3px] ${
+                          className={`py-2.5 px-2.5 sm:px-4 font-medium text-stone-900 border-l-[3px] ${
                             isSelected
                               ? "border-l-[#1B4332]"
                               : "border-l-transparent"
@@ -956,10 +956,10 @@ export default function BroaderPerspectiveSection() {
                         >
                           {reg.shortName}
                         </td>
-                        <td className="py-2.5 px-3 text-stone-600">
+                        <td className="hidden md:table-cell py-2.5 px-3 text-stone-600">
                           {reg.districts.join(", ")}
                         </td>
-                        <td className="py-2.5 px-3 text-right font-medium tabular-nums">
+                        <td className="py-2.5 px-2 sm:px-3 text-right font-medium tabular-nums">
                           {liveFoms ? (
                             <>
                               <span className="text-[#1D5B79]">
@@ -974,7 +974,7 @@ export default function BroaderPerspectiveSection() {
                             "—"
                           )}
                         </td>
-                        <td className="py-2.5 px-3 text-right tabular-nums">
+                        <td className="py-2.5 px-2 sm:px-3 text-right tabular-nums">
                           {liveFoms ? (
                             <span>
                               {reg.openFomCount > 0
@@ -986,12 +986,12 @@ export default function BroaderPerspectiveSection() {
                             "—"
                           )}
                         </td>
-                        <td className="py-2.5 px-3 text-right tabular-nums">
+                        <td className="py-2.5 px-2.5 sm:px-3 text-right tabular-nums">
                           {liveFoms
                             ? `${reg.byCategory.very_high} / ${reg.byCategory.high}`
                             : "—"}
                         </td>
-                        <td className="py-2.5 px-4 text-stone-600">
+                        <td className="hidden md:table-cell py-2.5 px-4 text-stone-600">
                           {reg.ecosystemSummary}
                         </td>
                       </tr>
@@ -1000,13 +1000,13 @@ export default function BroaderPerspectiveSection() {
 
                   {/* Province-Wide Total Reconciliation Row */}
                   <tr className="border-t border-[#DDD7C9] bg-[#F4F0E6]/65 font-semibold text-stone-900">
-                    <td className="py-2.5 px-4 border-l-[3px] border-l-transparent">
+                    <td className="py-2.5 px-2.5 sm:px-4 border-l-[3px] border-l-transparent">
                       British Columbia Total
                     </td>
-                    <td className="py-2.5 px-3 font-normal text-stone-600">
+                    <td className="hidden md:table-cell py-2.5 px-3 font-normal text-stone-600">
                       All 23 Forestry Districts
                     </td>
-                    <td className="py-2.5 px-3 text-right tabular-nums">
+                    <td className="py-2.5 px-2 sm:px-3 text-right tabular-nums">
                       {liveFoms ? (
                         <>
                           <span className="text-[#1D5B79]">
@@ -1021,7 +1021,7 @@ export default function BroaderPerspectiveSection() {
                         "—"
                       )}
                     </td>
-                    <td className="py-2.5 px-3 text-right tabular-nums">
+                    <td className="py-2.5 px-2 sm:px-3 text-right tabular-nums">
                       {liveFoms
                         ? `${(regionalSummaries.totals.openFomCount > 0
                             ? regionalSummaries.totals.openBlockCount
@@ -1033,12 +1033,12 @@ export default function BroaderPerspectiveSection() {
                           )}`
                         : "—"}
                     </td>
-                    <td className="py-2.5 px-3 text-right tabular-nums">
+                    <td className="py-2.5 px-2.5 sm:px-3 text-right tabular-nums">
                       {liveFoms
                         ? `${regionalSummaries.totals.veryHigh} / ${regionalSummaries.totals.high}`
                         : "—"}
                     </td>
-                    <td className="py-2.5 px-4 font-normal text-stone-600">
+                    <td className="hidden md:table-cell py-2.5 px-4 font-normal text-stone-600">
                       All BC forest ecosystems
                     </td>
                   </tr>
