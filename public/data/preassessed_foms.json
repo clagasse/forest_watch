@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "methodologyVersion": "v2.0",
-  "generatedAt": "2026-11-25T05:24:50.779Z",
+  "generatedAt": "2026-11-25T16:52:38.207Z",
   "source": "fom_api",
-  "totalProjects": 2292,
-  "openProjectsCount": 64,
-  "assessedProjectsCount": 62,
+  "totalProjects": 2296,
+  "openProjectsCount": 67,
+  "assessedProjectsCount": 65,
   "projects": [
     {
       "fomId": "3606",
@@ -1317,6 +1317,56 @@
       }
     },
     {
+      "fomId": "3626",
+      "name": "West Fraser Mills Ltd.",
+      "fspHolder": "WEST FRASER MILLS LTD.",
+      "district": "Omineca Region",
+      "regionId": "omineca",
+      "workflowState": "Commenting Open",
+      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3626",
+      "center": [
+        -125.4598612043065,
+        55.031523964667834
+      ],
+      "blockCount": 18,
+      "totalPlannedHa": 351.9,
+      "riskAssessment": {
+        "category": "high",
+        "label": "High Sensitivity",
+        "rank": 3,
+        "reasons": [
+          "Overlaps a legally protected winter wildlife range (M-ALAM · UWR u-7-018)."
+        ],
+        "assessmentScope": "multi_block_screening",
+        "methodologyVersion": "v2.0",
+        "isPartialAssessment": false,
+        "wildfireQualified": false
+      },
+      "projectScreening": {
+        "totalBlocks": 18,
+        "sampledBlocks": 5,
+        "highestRiskCategory": "high",
+        "categoryCounts": {
+          "very_high": 0,
+          "high": 3,
+          "moderate": 1,
+          "low": 0,
+          "unassessed": 1
+        },
+        "minStandAge": 101,
+        "maxStandAge": 133,
+        "maxSiteIndex": 21.5,
+        "anyWildfireOverlap": false,
+        "anyDesignationOverlap": true
+      },
+      "forestPreview": {
+        "standAgeYears": 111,
+        "siteIndexMeters": 17.6,
+        "canopyHeightMeters": 27.8,
+        "becZone": "SBSwk3"
+      }
+    },
+    {
       "fomId": "3628",
       "name": "WF FOM DMH Nov 2026",
       "fspHolder": "WEST FRASER MILLS LTD.",
@@ -1512,56 +1562,6 @@
         "siteIndexMeters": 13.9,
         "canopyHeightMeters": 21.3,
         "becZone": "SBSdw2"
-      }
-    },
-    {
-      "fomId": "3533",
-      "name": "CP 430",
-      "fspHolder": "COOPER CREEK CEDAR LTD.",
-      "district": "Kootenay–Boundary Region",
-      "regionId": "kootenay-boundary",
-      "workflowState": "Commenting Open",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3533",
-      "center": [
-        -116.98545656972306,
-        50.54856842970808
-      ],
-      "blockCount": 5,
-      "totalPlannedHa": 124.1,
-      "riskAssessment": {
-        "category": "high",
-        "label": "High Sensitivity",
-        "rank": 3,
-        "reasons": [
-          "Overlaps a legally protected winter wildlife range (M-ODHE · UWR u-4-001)."
-        ],
-        "assessmentScope": "multi_block_screening",
-        "methodologyVersion": "v2.0",
-        "isPartialAssessment": false,
-        "wildfireQualified": false
-      },
-      "projectScreening": {
-        "totalBlocks": 5,
-        "sampledBlocks": 5,
-        "highestRiskCategory": "high",
-        "categoryCounts": {
-          "very_high": 0,
-          "high": 2,
-          "moderate": 3,
-          "low": 0,
-          "unassessed": 0
-        },
-        "minStandAge": 90,
-        "maxStandAge": 140,
-        "maxSiteIndex": 20.9,
-        "anyWildfireOverlap": false,
-        "anyDesignationOverlap": true
-      },
-      "forestPreview": {
-        "standAgeYears": 110,
-        "siteIndexMeters": 20.6,
-        "canopyHeightMeters": 31.5,
-        "becZone": "ICHmw2"
       }
     },
     {
@@ -2166,6 +2166,56 @@
       }
     },
     {
+      "fomId": "3643",
+      "name": "2026CHM2",
+      "fspHolder": "KCFN FORESTRY VENTURES LIMITED PARTNERSHIP",
+      "district": "West Coast Region",
+      "regionId": "west-coast",
+      "workflowState": "Commenting Open",
+      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3643",
+      "center": [
+        -127.26398130729544,
+        50.21085476588295
+      ],
+      "blockCount": 24,
+      "totalPlannedHa": 132.5,
+      "riskAssessment": {
+        "category": "moderate",
+        "label": "Moderate Sensitivity",
+        "rank": 2,
+        "reasons": [
+          "Targets a mature forest (248 yrs old)."
+        ],
+        "assessmentScope": "multi_block_screening",
+        "methodologyVersion": "v2.0",
+        "isPartialAssessment": false,
+        "wildfireQualified": false
+      },
+      "projectScreening": {
+        "totalBlocks": 24,
+        "sampledBlocks": 5,
+        "highestRiskCategory": "moderate",
+        "categoryCounts": {
+          "very_high": 0,
+          "high": 0,
+          "moderate": 1,
+          "low": 4,
+          "unassessed": 0
+        },
+        "minStandAge": 56,
+        "maxStandAge": 248,
+        "maxSiteIndex": 28.9,
+        "anyWildfireOverlap": false,
+        "anyDesignationOverlap": false
+      },
+      "forestPreview": {
+        "standAgeYears": 248,
+        "siteIndexMeters": 13.6,
+        "canopyHeightMeters": 32.4,
+        "becZone": "CWHvm1"
+      }
+    },
+    {
       "fomId": "3621",
       "name": "CISAA Forestry LLP",
       "fspHolder": "CISAA FORESTRY LLP",
@@ -2614,6 +2664,56 @@
       }
     },
     {
+      "fomId": "3624",
+      "name": "Nahwitti River ",
+      "fspHolder": "RICHMOND PLYWOOD CORPORATION LIMITED",
+      "district": "West Coast Region",
+      "regionId": "west-coast",
+      "workflowState": "Commenting Open",
+      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3624",
+      "center": [
+        -127.87154204917616,
+        50.7407607706249
+      ],
+      "blockCount": 20,
+      "totalPlannedHa": 57.8,
+      "riskAssessment": {
+        "category": "moderate",
+        "label": "Moderate Sensitivity",
+        "rank": 2,
+        "reasons": [
+          "Targets slow-growing old growth (328 yrs old; growing productivity 8.6 m)."
+        ],
+        "assessmentScope": "multi_block_screening",
+        "methodologyVersion": "v2.0",
+        "isPartialAssessment": false,
+        "wildfireQualified": false
+      },
+      "projectScreening": {
+        "totalBlocks": 20,
+        "sampledBlocks": 5,
+        "highestRiskCategory": "moderate",
+        "categoryCounts": {
+          "very_high": 0,
+          "high": 0,
+          "moderate": 4,
+          "low": 0,
+          "unassessed": 1
+        },
+        "minStandAge": 158,
+        "maxStandAge": 328,
+        "maxSiteIndex": 11.7,
+        "anyWildfireOverlap": false,
+        "anyDesignationOverlap": false
+      },
+      "forestPreview": {
+        "standAgeYears": 328,
+        "siteIndexMeters": 8.6,
+        "canopyHeightMeters": 23.2,
+        "becZone": "CWHvh1"
+      }
+    },
+    {
       "fomId": "3567",
       "name": "Salvage Harvest - LL50",
       "fspHolder": "LOGAN LAKE COMMUNITY FOREST CORPORATION",
@@ -2811,6 +2911,56 @@
         "siteIndexMeters": 12.4,
         "canopyHeightMeters": 24.4,
         "becZone": "CWHwh1"
+      }
+    },
+    {
+      "fomId": "3625",
+      "name": "West Fraser Mills Ltd",
+      "fspHolder": "WEST FRASER MILLS LTD.",
+      "district": "Skeena Region",
+      "regionId": "skeena",
+      "workflowState": "Commenting Open",
+      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3625",
+      "center": [
+        -125.97336361073448,
+        54.16326033502059
+      ],
+      "blockCount": 25,
+      "totalPlannedHa": 706.5,
+      "riskAssessment": {
+        "category": "moderate",
+        "label": "Moderate Sensitivity",
+        "rank": 2,
+        "reasons": [
+          "Targets a mature forest (123 yrs old)."
+        ],
+        "assessmentScope": "multi_block_screening",
+        "methodologyVersion": "v2.0",
+        "isPartialAssessment": false,
+        "wildfireQualified": false
+      },
+      "projectScreening": {
+        "totalBlocks": 25,
+        "sampledBlocks": 5,
+        "highestRiskCategory": "moderate",
+        "categoryCounts": {
+          "very_high": 0,
+          "high": 0,
+          "moderate": 4,
+          "low": 0,
+          "unassessed": 1
+        },
+        "minStandAge": 96,
+        "maxStandAge": 123,
+        "maxSiteIndex": 14.5,
+        "anyWildfireOverlap": false,
+        "anyDesignationOverlap": false
+      },
+      "forestPreview": {
+        "standAgeYears": 123,
+        "siteIndexMeters": 11.9,
+        "canopyHeightMeters": 18.3,
+        "becZone": "ESSFmc"
       }
     },
     {
@@ -3553,8 +3703,8 @@
         -121.672555534,
         51.549053345
       ],
-      "blockCount": 41,
-      "totalPlannedHa": 4311,
+      "blockCount": 45,
+      "totalPlannedHa": 4337.4,
       "riskAssessment": {
         "category": "unassessed",
         "label": "Unassessed",
@@ -9927,7 +10077,7 @@
       "fspHolder": "TOLKO INDUSTRIES LTD.",
       "district": "BC Natural Resource District",
       "regionId": "thompson-okanagan",
-      "workflowState": "Commenting Closed",
+      "workflowState": "Finalized",
       "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3562",
       "center": [
         -119.379905105,
@@ -10999,8 +11149,6 @@
         -119.358632603,
         51.660708102
       ],
-      "blockCount": 4,
-      "totalPlannedHa": 4.2,
       "riskAssessment": {
         "category": "unassessed",
         "label": "Unassessed",
@@ -18212,30 +18360,6 @@
       }
     },
     {
-      "fomId": "3379",
-      "name": "CP 19",
-      "fspHolder": "KITWANCOOL NASS FOREST PRODUCTS INC.",
-      "district": "BC Natural Resource District",
-      "regionId": "skeena",
-      "workflowState": "Commenting Closed",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3379",
-      "center": [
-        -129.139961599,
-        55.764540396
-      ],
-      "riskAssessment": {
-        "category": "unassessed",
-        "label": "Unassessed",
-        "rank": 0,
-        "reasons": [
-          "Comment period closed; click proposal to inspect cutblocks."
-        ],
-        "assessmentScope": "unassessed",
-        "methodologyVersion": "v2.0",
-        "isPartialAssessment": false
-      }
-    },
-    {
       "fomId": "1836",
       "name": "GF TFL8 CP 06S & A18969 CP 543 Wallace -MP",
       "fspHolder": "INTERFOR CORPORATION",
@@ -18414,6 +18538,30 @@
       "center": [
         -118.693839236,
         49.858371959
+      ],
+      "riskAssessment": {
+        "category": "unassessed",
+        "label": "Unassessed",
+        "rank": 0,
+        "reasons": [
+          "Comment period closed; click proposal to inspect cutblocks."
+        ],
+        "assessmentScope": "unassessed",
+        "methodologyVersion": "v2.0",
+        "isPartialAssessment": false
+      }
+    },
+    {
+      "fomId": "3379",
+      "name": "CP 19",
+      "fspHolder": "KITWANCOOL NASS FOREST PRODUCTS INC.",
+      "district": "BC Natural Resource District",
+      "regionId": "skeena",
+      "workflowState": "Finalized",
+      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3379",
+      "center": [
+        -129.139961599,
+        55.764540396
       ],
       "riskAssessment": {
         "category": "unassessed",
@@ -37798,30 +37946,6 @@
       }
     },
     {
-      "fomId": "3183",
-      "name": "TA2853",
-      "fspHolder": "TIMBER SALES MANAGER KAMLOOPS",
-      "district": "BC Natural Resource District",
-      "regionId": "thompson-okanagan",
-      "workflowState": "Commenting Closed",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3183",
-      "center": [
-        -120.532795798,
-        49.86025623
-      ],
-      "riskAssessment": {
-        "category": "unassessed",
-        "label": "Unassessed",
-        "rank": 0,
-        "reasons": [
-          "Comment period closed; click proposal to inspect cutblocks."
-        ],
-        "assessmentScope": "unassessed",
-        "methodologyVersion": "v2.0",
-        "isPartialAssessment": false
-      }
-    },
-    {
       "fomId": "2725",
       "name": "TimberWest Johnstone Strait",
       "fspHolder": "TIMBERWEST FOREST CORP.",
@@ -53494,6 +53618,30 @@
       }
     },
     {
+      "fomId": "3533",
+      "name": "CP 430",
+      "fspHolder": "COOPER CREEK CEDAR LTD.",
+      "district": "BC Natural Resource District",
+      "regionId": "kootenay-boundary",
+      "workflowState": "Commenting Closed",
+      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3533",
+      "center": [
+        -116.998965719,
+        50.586243732
+      ],
+      "riskAssessment": {
+        "category": "unassessed",
+        "label": "Unassessed",
+        "rank": 0,
+        "reasons": [
+          "Comment period closed; click proposal to inspect cutblocks."
+        ],
+        "assessmentScope": "unassessed",
+        "methodologyVersion": "v2.0",
+        "isPartialAssessment": false
+      }
+    },
+    {
       "fomId": "3519",
       "name": "FOM 29",
       "fspHolder": "606546 B.C. LTD.",
@@ -53523,7 +53671,7 @@
       "fspHolder": "TOLKO INDUSTRIES LTD.",
       "district": "BC Natural Resource District",
       "regionId": "thompson-okanagan",
-      "workflowState": "Commenting Closed",
+      "workflowState": "Finalized",
       "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3559",
       "center": [
         -119.737945488,
@@ -53931,7 +54079,7 @@
       "fspHolder": "TOLKO INDUSTRIES LTD.",
       "district": "BC Natural Resource District",
       "regionId": "thompson-okanagan",
-      "workflowState": "Commenting Closed",
+      "workflowState": "Finalized",
       "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3560",
       "center": [
         -118.636990434,
@@ -54310,30 +54458,6 @@
       }
     },
     {
-      "fomId": "3561",
-      "name": "2026-FM-10D",
-      "fspHolder": "TOLKO INDUSTRIES LTD.",
-      "district": "BC Natural Resource District",
-      "regionId": "thompson-okanagan",
-      "workflowState": "Commenting Closed",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3561",
-      "center": [
-        -118.390528642,
-        50.375844788
-      ],
-      "riskAssessment": {
-        "category": "unassessed",
-        "label": "Unassessed",
-        "rank": 0,
-        "reasons": [
-          "Comment period closed; click proposal to inspect cutblocks."
-        ],
-        "assessmentScope": "unassessed",
-        "methodologyVersion": "v2.0",
-        "isPartialAssessment": false
-      }
-    },
-    {
       "fomId": "3234",
       "name": "A19214_FOM_26_02",
       "fspHolder": "LIL'WAT FORESTRY VENTURES LIMITED PARTNERSHIP",
@@ -54392,6 +54516,30 @@
       "center": [
         -117.41088664,
         49.222916143
+      ],
+      "riskAssessment": {
+        "category": "unassessed",
+        "label": "Unassessed",
+        "rank": 0,
+        "reasons": [
+          "Comment period closed; click proposal to inspect cutblocks."
+        ],
+        "assessmentScope": "unassessed",
+        "methodologyVersion": "v2.0",
+        "isPartialAssessment": false
+      }
+    },
+    {
+      "fomId": "3561",
+      "name": "2026-FM-10D",
+      "fspHolder": "TOLKO INDUSTRIES LTD.",
+      "district": "BC Natural Resource District",
+      "regionId": "thompson-okanagan",
+      "workflowState": "Finalized",
+      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3561",
+      "center": [
+        -118.390528642,
+        50.375844788
       ],
       "riskAssessment": {
         "category": "unassessed",
@@ -56715,7 +56863,7 @@
       "fspHolder": "MATCHLEE GENERAL PARTNER LTD.",
       "district": "BC Natural Resource District",
       "regionId": "west-coast",
-      "workflowState": "Commenting Closed",
+      "workflowState": "Finalized",
       "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3538",
       "center": [
         -126.021425027,
@@ -56792,6 +56940,30 @@
       "center": [
         -120.485349206,
         49.75111158
+      ],
+      "riskAssessment": {
+        "category": "unassessed",
+        "label": "Unassessed",
+        "rank": 0,
+        "reasons": [
+          "Comment period closed; click proposal to inspect cutblocks."
+        ],
+        "assessmentScope": "unassessed",
+        "methodologyVersion": "v2.0",
+        "isPartialAssessment": false
+      }
+    },
+    {
+      "fomId": "3183",
+      "name": "TA2853",
+      "fspHolder": "TIMBER SALES MANAGER KAMLOOPS",
+      "district": "BC Natural Resource District",
+      "regionId": "thompson-okanagan",
+      "workflowState": "Commenting Closed",
+      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3183",
+      "center": [
+        -120.532795798,
+        49.86025623
       ],
       "riskAssessment": {
         "category": "unassessed",
