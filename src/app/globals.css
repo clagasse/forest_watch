@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  background-color: #f7f4ec;
+  color: #1a201d;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+.topo-banner {
+  background-color: #f1ede2;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='220' viewBox='0 0 640 220'%3E%3Cg fill='none' stroke='%23143929' stroke-opacity='0.06' stroke-width='1.1'%3E%3Cpath d='M-40 40 Q 120 5 280 55 T 680 35'/%3E%3Cpath d='M-40 78 Q 140 32 310 86 T 680 72'/%3E%3Cpath d='M-40 118 Q 160 66 340 122 T 680 112'/%3E%3Cpath d='M-40 158 Q 180 108 360 162 T 680 154'/%3E%3Cpath d='M-40 198 Q 200 148 390 202 T 680 192'/%3E%3C/g%3E%3C/svg%3E"),
+    linear-gradient(180deg, #efeae0 0%, #f7f4ec 100%);
+  background-size: 640px 220px, 100% 100%;
+  background-repeat: repeat-x, no-repeat;
+}
+
+/* Subtle warm-stone scrollbars for explorer sidebars */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f3efe6;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cfc8b8;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a9a18e;
+}

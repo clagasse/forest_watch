@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.*
+
+# Next.js build output
+.next/
+out/
+
+# Vercel
+.vercel
+
+# Environment files
+.env
+.env*.local
+
+# TypeScript build cache
+*.tsbuildinfo
+next-env.d.ts
+
+# Python cache
+scripts/__pycache__/
+*.pyc
+__pycache__/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
