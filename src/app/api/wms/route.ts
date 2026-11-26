@@ -6,12 +6,27 @@ import {
   type ForestOverlayKey,
   type MapLayerStyleSpec,
 } from "@/data/bcForestryData";
+import { createMemoryRateLimiter, getClientIp } from "@/lib/requestGuards";
 
 export const maxDuration = 30;
 
 const BCGW_WMS_URL = "https://openmaps.gov.bc.ca/geo/pub/wms";
 const BBOX_REGEX =
   /^-?\d+(\.\d+)?,-?\d+(\.\d+)?,-?\d+(\.\d+)?,-?\d+(\.\d+)?$/;
+const BC_3857 = {
+  minX: -15_800_000,
+  maxX: -12_400_000,
+  minY: 6_050_000,
+  maxY: 8_650_000,
+};
+const EMPTY_PNG_BUFFER = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
+  "base64"
+);
+const checkWmsRateLimit = createMemoryRateLimiter({
+  maxRequests: 360,
+  windowMs: 60_000,
+});
 
 function getStyleSpecForWmsKey(layerKey: string): MapLayerStyleSpec | undefined {
   if (layerKey === "completed_cutblocks") {
@@ -112,6 +127,14 @@ const WMS_LAYER_MAP: Record<string, WmsLayerSpec> = {
 };
 
 export async function GET(request: NextRequest) {
+  const rate = checkWmsRateLimit(getClientIp(request));
+  if (!rate.allowed) {
+    return new NextResponse("Too many map tile requests", {
+      status: 429,
+      headers: { "Retry-After": String(rate.retryAfterSec) },
+    });
+  }
+
   const { searchParams } = new URL(request.url);
   const layerKey = searchParams.get("layerKey") || "";
   const bbox = searchParams.get("bbox") || "";
@@ -132,6 +155,42 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  const [minX, minY, maxX, maxY] = bbox.split(",").map(Number);
+  if (
+    !Number.isFinite(minX) ||
+    !Number.isFinite(minY) ||
+    !Number.isFinite(maxX) ||
+    !Number.isFinite(maxY) ||
+    minX >= maxX ||
+    minY >= maxY ||
+    maxX - minX <= 1 ||
+    maxY - minY <= 1
+  ) {
+    return NextResponse.json(
+      { error: "Invalid bbox bounds" },
+      { status: 400 }
+    );
+  }
+
+  const intersectsBc =
+    maxX >= BC_3857.minX &&
+    minX <= BC_3857.maxX &&
+    maxY >= BC_3857.minY &&
+    minY <= BC_3857.maxY;
+
+  if (!intersectsBc) {
+    return new NextResponse(EMPTY_PNG_BUFFER, {
+      status: 200,
+      headers: {
+        "Content-Type": "image/png",
+        "Cache-Control": "public, max-age=86400, s-maxage=86400",
+        "X-WMS-Style": "out-of-bounds",
+      },
+    });
+  }
+
+  const normalizedBbox = `${Math.round(minX)},${Math.round(minY)},${Math.round(maxX)},${Math.round(maxY)}`;
+
   let cqlFilter = spec.cqlFilter;
   if (layerKey === "completed_cutblocks") {
     if (completedSince === "2020") {
@@ -149,7 +208,7 @@ export async function GET(request: NextRequest) {
     REQUEST: "GetMap",
     LAYERS: spec.layers,
     CRS: "EPSG:3857",
-    BBOX: bbox,
+    BBOX: normalizedBbox,
     WIDTH: "256",
     HEIGHT: "256",
     FORMAT: "image/png",

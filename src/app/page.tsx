@@ -68,11 +68,17 @@ export default function HomePage() {
               >
                 Old Growth &amp; Metrics
               </Link>
-              <Link
-                href="/about"
+              <a
+                href="/api/feed.xml"
                 className="text-[#143929] hover:text-[#1D523B] font-medium transition-colors"
               >
-                About &amp; Help &rarr;
+                RSS Feed
+              </a>
+              <Link
+                href="/about#take-action"
+                className="text-[#143929] hover:text-[#1D523B] font-medium transition-colors"
+              >
+                Take Action &amp; Help &rarr;
               </Link>
             </div>
           </div>

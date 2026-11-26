@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import SiteHeader from "@/components/SiteHeader";
 import { BCGW_LAYER_CATALOG } from "@/data/bcForestryData";
-import { ExternalLink, ArrowLeft } from "lucide-react";
+import { ExternalLink, ArrowLeft, Mail, Rss } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "About & Help",
@@ -12,6 +12,10 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
+  const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || "";
+  const feedbackUrl = process.env.NEXT_PUBLIC_FEEDBACK_URL?.trim() || "";
+  const hasFeedbackChannel = Boolean(contactEmail || feedbackUrl);
+
   return (
     <div className="min-h-screen flex flex-col bg-[#F7F4EC] text-[#1A201D]">
       <SiteHeader />
@@ -41,7 +45,7 @@ export default function AboutPage() {
 
       <main className="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 py-8 space-y-6">
 
-        {/* 1. What This Site Does */}
+        {/* 1. What This Site Does & Why It Exists */}
         <section className="bg-white border border-[#DDD7C9] rounded-xl p-6 space-y-3 shadow-[0_1px_3px_rgba(16,42,32,0.04)]">
           <h2 className="font-serif text-lg font-semibold text-[#11241C]">
             1. What This Site Does
@@ -62,9 +66,17 @@ export default function AboutPage() {
             >
               Old-Growth &amp; Habitat Sensitivity
             </Link>{" "}
-            rating (Methods v2.0) and organized around BC&apos;s 8 official
+            rating (Methods v2.1) and organized around BC&apos;s 8 official
             forestry regions.
           </p>
+          <div className="bg-[#F6F3EB] border border-[#E4DEC9] border-l-[3px] border-l-[#1D523B] rounded-lg p-3.5 text-xs text-stone-700 leading-relaxed">
+            <strong className="text-[#11241C]">Why this app exists:</strong> BC
+            Forestry Watch was built independently by a concerned British
+            Columbia citizen to make public forestry data accessible,
+            understandable, and transparent—and to encourage constructive,
+            evidence-based civic engagement in how BC&apos;s public forests are
+            stewarded.
+          </div>
         </section>
 
         {/* 2. How to Use the Map */}
@@ -103,42 +115,212 @@ export default function AboutPage() {
           </ul>
         </section>
 
-        {/* 3. Submitting a Public Comment */}
-        <section className="bg-white border border-[#DDD7C9] rounded-xl p-6 space-y-4 shadow-[0_1px_3px_rgba(16,42,32,0.04)]">
-          <h2 className="font-serif text-lg font-semibold text-[#11241C]">
-            3. Submitting a Public Comment
-          </h2>
-          <p className="text-sm text-stone-700 leading-relaxed">
-            Under British Columbia forestry law (the{" "}
-            <em>Forest and Range Practices Act</em>), forestry companies and BC
-            Timber Sales must post proposed cutblocks and logging roads for a
-            30-day public review period before applying for a cutting permit.
-          </p>
-          <ol className="list-decimal pl-5 space-y-2 text-sm text-stone-700">
-            <li>
-              Select an open proposal in the left panel or click a blue proposed
-              cutblock on the map.
-            </li>
-            <li>
-              Click <strong>Copy Forest Summary</strong> in the right-hand panel
-              to copy the coordinates, block ID, district, tree age, height,
-              species, and ecosystem details to your clipboard.
-            </li>
-            <li>
-              Click <strong>Open Official BC Comment Portal</strong> to paste
-              those details into your public comment before the deadline.
-            </li>
-          </ol>
+        {/* 3. Ways to Have Your Say in BC Forestry */}
+        <section
+          id="take-action"
+          className="bg-white border border-[#DDD7C9] rounded-xl p-6 space-y-5 shadow-[0_1px_3px_rgba(16,42,32,0.04)] scroll-mt-20"
+        >
           <div>
-            <a
-              href="https://fom.nrs.gov.bc.ca/public/projects"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-semibold transition-colors"
-            >
-              <span>Open Official BC Comment Portal</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
+            <h2 className="font-serif text-lg font-semibold text-[#11241C]">
+              3. Ways to Have Your Say in BC Forestry
+            </h2>
+            <p className="text-sm text-stone-600 mt-1 leading-relaxed">
+              Public input doesn&apos;t start or end with a 30-day cutblock
+              window. Whether you want to comment on an active proposal, raise a
+              pending permit with elected representatives, or shape long-term
+              watershed planning, here are the official channels available to
+              BC residents:
+            </p>
+          </div>
+
+          {/* Avenue A: 30-Day FOM Public Comment */}
+          <div className="bg-[#FAF8F4] border border-[#E5DFD2] rounded-lg p-4 space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h3 className="text-sm font-semibold text-[#11241C]">
+                A. Submit a 30-Day Public Comment (Forest Operations Map)
+              </h3>
+              <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-sky-50 text-sky-900 border border-sky-200">
+                Before Permit Approval
+              </span>
+            </div>
+            <p className="text-xs text-stone-700 leading-relaxed">
+              Under British Columbia&apos;s <em>Forest and Range Practices Act</em>,
+              forestry companies and BC Timber Sales must post proposed cutblocks
+              and logging roads for a 30-day public review before applying for a
+              cutting permit.
+            </p>
+            <ol className="list-decimal pl-5 space-y-1.5 text-xs text-stone-700">
+              <li>
+                Select an open proposal in the Explorer or click any blue
+                proposed cutblock on the map.
+              </li>
+              <li>
+                Click <strong>Copy Summary</strong> (and optionally{" "}
+                <strong>Copy Share Link</strong>) in the right-hand panel to
+                copy the block ID, coordinates, tree age, species, and
+                designation overlaps.
+              </li>
+              <li>
+                Click <strong>Open Official BC Comment Portal</strong> to submit
+                your feedback before the deadline.
+              </li>
+            </ol>
+            <div>
+              <a
+                href="https://fom.nrs.gov.bc.ca/public/projects"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-[#143929] hover:bg-[#1D523B] text-white text-xs font-semibold transition-colors"
+              >
+                <span>Open Official BC Comment Portal</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            </div>
+          </div>
+
+          {/* Avenue B: Contact Your MLA & Minister of Forests */}
+          <div className="bg-[#FAF8F4] border border-[#E5DFD2] rounded-lg p-4 space-y-2.5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h3 className="text-sm font-semibold text-[#11241C]">
+                B. Contact Your Local MLA &amp; the BC Minister of Forests
+              </h3>
+              <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-50 text-emerald-900 border border-emerald-200">
+                Open Year-Round
+              </span>
+            </div>
+            <p className="text-xs text-stone-700 leading-relaxed">
+              Once a proposal moves to <em>Pending Permit</em> or <em>Active</em>,
+              the 30-day consultation window is closed—but elected officials
+              still set policy, approve old-growth deferrals, and oversee the
+              Ministry of Forests. In the Explorer, you can use{" "}
+              <strong>Copy Share Link</strong> and{" "}
+              <strong>Email Minister of Forests</strong> directly from any
+              inspected cutblock or coordinate.
+            </p>
+            <div className="flex flex-wrap items-center gap-3 text-xs pt-0.5">
+              <a
+                href="https://www.leg.bc.ca/members"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-stone-300 hover:bg-stone-100 text-stone-900 font-medium transition-colors"
+              >
+                <span>Find Your BC MLA</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+              <a
+                href="mailto:FOR.Minister@gov.bc.ca?subject=BC%20Forestry%20Stewardship%20Inquiry"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-stone-300 hover:bg-stone-100 text-stone-900 font-medium transition-colors"
+              >
+                <span>Email FOR.Minister@gov.bc.ca</span>
+              </a>
+              <span className="text-stone-500">
+                Minister&apos;s Office: 250-387-6240
+              </span>
+            </div>
+          </div>
+
+          {/* Avenue C: Forest Practices Board */}
+          <div className="bg-[#FAF8F4] border border-[#E5DFD2] rounded-lg p-4 space-y-2.5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h3 className="text-sm font-semibold text-[#11241C]">
+                C. File a Concern with the Forest Practices Board
+              </h3>
+              <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-200">
+                Independent Watchdog
+              </span>
+            </div>
+            <p className="text-xs text-stone-700 leading-relaxed">
+              The Forest Practices Board is BC&apos;s independent public
+              watchdog for forest and range practices on public Crown land. Any
+              resident can submit a complaint about timber harvesting, logging
+              roads, drinking-water impacts, wildlife protection, or whether
+              operations comply with provincial forestry laws.
+            </p>
+            <div className="flex flex-wrap items-center gap-3 text-xs pt-0.5">
+              <a
+                href="https://www.bcfpb.ca"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-emerald-800 hover:underline font-medium"
+              >
+                <span>Forest Practices Board (bcfpb.ca)</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+              <span className="text-stone-500">
+                Email: FPBoard@bcfpb.ca · Toll-free: 1-800-994-5899
+              </span>
+            </div>
+          </div>
+
+          {/* Avenue D: Forest Landscape Planning & govTogetherBC */}
+          <div className="bg-[#FAF8F4] border border-[#E5DFD2] rounded-lg p-4 space-y-2.5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h3 className="text-sm font-semibold text-[#11241C]">
+                D. Join Long-Term Forest Landscape Planning &amp; Consultations
+              </h3>
+              <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-stone-100 text-stone-700 border border-stone-200">
+                Upstream Planning
+              </span>
+            </div>
+            <p className="text-xs text-stone-700 leading-relaxed">
+              British Columbia is transitioning toward{" "}
+              <strong>Forest Landscape Plans</strong> co-developed with First
+              Nations to set long-term rules for old growth, biodiversity, and
+              watersheds <em>before</em> individual cutblocks are proposed. Watch
+              for regional public engagements in your area.
+            </p>
+            <div className="flex flex-wrap items-center gap-3 text-xs pt-0.5">
+              <a
+                href="https://engage.gov.bc.ca"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-emerald-800 hover:underline font-medium"
+              >
+                <span>govTogetherBC Public Engagements</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+              <a
+                href="mailto:forestlandscapeplanning@gov.bc.ca"
+                className="text-emerald-800 hover:underline font-medium"
+              >
+                forestlandscapeplanning@gov.bc.ca
+              </a>
+            </div>
+          </div>
+
+          {/* Avenue E: Local Districts, Councils & Field Violations */}
+          <div className="bg-[#FAF8F4] border border-[#E5DFD2] rounded-lg p-4 space-y-2">
+            <h3 className="text-sm font-semibold text-[#11241C]">
+              E. Local Districts, Municipal Councils &amp; Field Reporting
+            </h3>
+            <ul className="list-disc pl-5 space-y-1.5 text-xs text-stone-700 leading-relaxed">
+              <li>
+                <strong>Local Natural Resource District / FrontCounter BC:</strong>{" "}
+                For operational questions or permit inquiries in your district,
+                call <strong>1-877-855-3222</strong> or email{" "}
+                <a
+                  href="mailto:FrontCounterBC@gov.bc.ca"
+                  className="text-emerald-800 hover:underline font-medium"
+                >
+                  FrontCounterBC@gov.bc.ca
+                </a>
+                .
+              </li>
+              <li>
+                <strong>Municipal &amp; Regional District Councils:</strong> If a
+                proposed cutblock overlaps a{" "}
+                <em>Community Drinking-Water Watershed</em>, share the Evidence
+                JSON or Share Link with your local water purveyor or regional
+                district board.
+              </li>
+              <li>
+                <strong>Report Active Violations (24/7):</strong> Suspected
+                illegal logging, stream damage, or wildlife violations can be
+                reported anytime via BC&apos;s{" "}
+                <strong>Report All Poachers and Polluters (RAPP)</strong> line
+                at <strong>1-877-952-7277</strong>.
+              </li>
+            </ul>
           </div>
         </section>
 
@@ -355,6 +537,110 @@ export default function AboutPage() {
             Always verify legal cutblock boundaries, parcel lines, and official
             comment deadlines on provincial portals before making decisions.
           </p>
+        </section>
+
+        {/* 7. Subscribe, Report a Data Issue & Feedback */}
+        <section
+          id="feedback"
+          className="bg-white border border-[#DDD7C9] rounded-xl p-6 space-y-3 shadow-[0_1px_3px_rgba(16,42,32,0.04)] scroll-mt-20"
+        >
+          <h2 className="font-serif text-lg font-semibold text-[#11241C]">
+            7. Subscribe, Report a Data Issue &amp; Feedback
+          </h2>
+          <div className="space-y-3 text-sm text-stone-700 leading-relaxed">
+            <p>
+              <strong>Subscribe via RSS:</strong> Watershed groups,
+              journalists, and residents can follow newly opened 30-day logging
+              proposals without creating an account or sharing an email address.
+              Copy the feed link below and paste it into any free RSS reader
+              (such as Feedly, NetNewsWire, Inoreader, or a Slack/Discord RSS
+              integration):
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <a
+                href="/api/feed.xml"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#FAF8F4] border border-[#D8D1C2] text-emerald-900 hover:bg-[#F2EDE2] text-xs font-semibold transition-colors"
+              >
+                <Rss className="w-3.5 h-3.5" />
+                <span>BC Forestry Watch RSS Feed (/api/feed.xml)</span>
+              </a>
+              <span className="text-xs text-stone-600">
+                Optional filters:{" "}
+                <code className="text-xs bg-[#F4F0E6] px-1.5 py-0.5 rounded">
+                  /api/feed.xml?region=west-coast&amp;minRisk=high
+                </code>
+              </span>
+            </div>
+
+            {hasFeedbackChannel ? (
+              <div className="pt-1 space-y-2.5">
+                <p>
+                  <strong>Report a Map Anomaly or Suggest a Feature:</strong>{" "}
+                  Local foresters, biologists, and residents are encouraged to
+                  flag data discrepancies, broken links, or feature ideas. When
+                  reporting a site-specific issue, please include the{" "}
+                  <strong>FOM Proposal ID</strong>, coordinates (or{" "}
+                  <strong>Copy Share Link</strong>), or the{" "}
+                  <strong>Evidence JSON</strong> downloaded from the Technical
+                  Audit drawer.
+                </p>
+                <div className="flex flex-wrap items-center gap-2.5">
+                  {contactEmail && (
+                    <a
+                      href={`mailto:${contactEmail}?subject=${encodeURIComponent(
+                        "BC Forestry Watch Feedback"
+                      )}`}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#143929] hover:bg-[#1D523B] text-white text-xs font-semibold transition-colors"
+                    >
+                      <Mail className="w-3.5 h-3.5" />
+                      <span>Email {contactEmail}</span>
+                    </a>
+                  )}
+                  {feedbackUrl && (
+                    <a
+                      href={feedbackUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={
+                        contactEmail
+                          ? "inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#FAF8F4] hover:bg-[#F2EDE2] text-[#143929] border border-[#D8D1C2] text-xs font-semibold transition-colors"
+                          : "inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#143929] hover:bg-[#1D523B] text-white text-xs font-semibold transition-colors"
+                      }
+                    >
+                      <span>Open Feedback / Issue Tracker</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <p className="text-xs text-stone-600 pt-1">
+                <strong>Report a Data or Boundary Issue:</strong> A direct
+                contact email or issue tracker has not been configured on this
+                deployment yet. To verify official cutblock boundaries or submit
+                formal feedback on an active proposal, visit the{" "}
+                <a
+                  href="https://fom.nrs.gov.bc.ca/public/projects"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-emerald-800 hover:underline font-medium"
+                >
+                  BC FOM Portal
+                </a>
+                ; to report suspected forestry compliance issues on public
+                Crown land, contact the{" "}
+                <a
+                  href="https://www.bcfpb.ca"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-emerald-800 hover:underline font-medium"
+                >
+                  Forest Practices Board
+                </a>
+                .
+              </p>
+            )}
+          </div>
         </section>
 
         <div className="pt-2">

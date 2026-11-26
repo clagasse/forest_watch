@@ -534,6 +534,8 @@ export function extractVriProperties(
         becRelativeHighSiThreshold: null,
         isHighProdForBec: null,
         ecologicalNote: null,
+        landscapeRarityLabel: null,
+        landscapeRarityNote: null,
         areaHa: null,
         oldGrowthThresholdYears: null,
         isOldGrowth: null,
@@ -653,6 +655,8 @@ export function extractVriProperties(
       becRelativeHighSiThreshold: becInfo.becRelativeHighSiThreshold,
       isHighProdForBec,
       ecologicalNote: becInfo.ecologicalNote || null,
+      landscapeRarityLabel: becInfo.landscapeRarity?.label ?? null,
+      landscapeRarityNote: becInfo.landscapeRarity?.note ?? null,
       areaHa,
       oldGrowthThresholdYears: becInfo.oldGrowthThresholdYears,
       isOldGrowth,
@@ -859,6 +863,103 @@ function extractWildfireInfo(
   return { info: null, rawWildfire: null };
 }
 
+function normalizeBurnSeverity(
+  raw: unknown
+): "High" | "Medium" | "Low" | "Unburned" | null {
+  if (!raw) return null;
+  const s = String(raw).trim().toUpperCase();
+  if (s === "HIGH") return "High";
+  if (s === "MEDIUM" || s === "MODERATE") return "Medium";
+  if (s === "LOW") return "Low";
+  if (s === "UNBURNED") return "Unburned";
+  return null;
+}
+
+async function queryBurnSeverityAtPoint(
+  lng: number,
+  lat: number,
+  fireYear: number
+): Promise<{
+  rating: "High" | "Medium" | "Low" | "Unburned" | null;
+  source: "historical_1yr" | "same_year" | null;
+  raw: Record<string, unknown> | null;
+}> {
+  const delta = 0.0005;
+  const minLon = lng - delta;
+  const minLat = lat - delta;
+  const maxLon = lng + delta;
+  const maxLat = lat + delta;
+
+  const pickBest = (feats: RawGeoJSONFeature[]) => {
+    const containing = filterContainingFeatures(feats, lng, lat);
+    if (containing.length === 0) return null;
+    const withRating = containing.filter((f) =>
+      normalizeBurnSeverity(f.properties?.BURN_SEVERITY_RATING)
+    );
+    const pool = withRating.length > 0 ? withRating : containing;
+    const sorted = [...pool].sort((a, b) => {
+      const ya = Number(a.properties?.FIRE_YEAR || 0);
+      const yb = Number(b.properties?.FIRE_YEAR || 0);
+      return Math.abs(ya - fireYear) - Math.abs(yb - fireYear);
+    });
+    const best = sorted[0];
+    const bestYr = Number(best.properties?.FIRE_YEAR || 0);
+    if (bestYr > 0 && bestYr < fireYear - 1) return null;
+    return best;
+  };
+
+  try {
+    const histFc = await queryBcgwByBbox(
+      "pub:WHSE_FOREST_VEGETATION.VEG_BURN_SEVERITY_SP",
+      minLon,
+      minLat,
+      maxLon,
+      maxLat,
+      4,
+      4500
+    );
+    const histFeat = pickBest(histFc.features || []);
+    const histRating = normalizeBurnSeverity(
+      histFeat?.properties?.BURN_SEVERITY_RATING
+    );
+    if (histFeat && histRating) {
+      return {
+        rating: histRating,
+        source: "historical_1yr",
+        raw: sanitizeAuditProperties(histFeat.properties),
+      };
+    }
+
+    const currentYear = new Date().getUTCFullYear();
+    if (fireYear >= currentYear - 1) {
+      const sameFc = await queryBcgwByBbox(
+        "pub:WHSE_FOREST_VEGETATION.VEG_BURN_SEVERITY_SAME_YR_SP",
+        minLon,
+        minLat,
+        maxLon,
+        maxLat,
+        4,
+        4500
+      );
+      const sameFeat = pickBest(sameFc.features || []);
+      const sameRating = normalizeBurnSeverity(
+        sameFeat?.properties?.BURN_SEVERITY_RATING
+      );
+      if (sameFeat && sameRating) {
+        return {
+          rating: sameRating,
+          source: "same_year",
+          raw: sanitizeAuditProperties(sameFeat.properties),
+        };
+      }
+    }
+  } catch {
+    // Gracefully fall back to null burn severity if upstream layer fails
+  }
+
+  return { rating: null, source: null, raw: null };
+}
+
 /* ============================================================================
  * Full 13-Layer Live Location Inspection
  * ========================================================================== */
@@ -1029,6 +1130,17 @@ export async function inspectLocation(
     rawHistFire,
     forest.referenceYear
   );
+  let burnSeverityAudit: Record<string, unknown> | null = null;
+  if (wildfireParsed.info?.postDatesVri) {
+    const sev = await queryBurnSeverityAtPoint(
+      lng,
+      lat,
+      wildfireParsed.info.fireYear
+    );
+    wildfireParsed.info.burnSeverity = sev.rating;
+    wildfireParsed.info.burnSeveritySource = sev.source;
+    burnSeverityAudit = sev.raw;
+  }
 
   const ogmaLabel = ogmaFeat?.properties
     ? String(
@@ -1110,6 +1222,7 @@ export async function inspectLocation(
     uwr: sanitizeAuditProperties(uwrFeat?.properties),
     communityWatershed: sanitizeAuditProperties(cwFeat?.properties),
     wildfire: wildfireParsed.rawWildfire,
+    burnSeverity: burnSeverityAudit,
   };
 
   return {
@@ -1216,6 +1329,15 @@ export async function screenLocationRisk(
     getFiltered(6),
     forest.referenceYear
   );
+  if (wildfireParsed.info?.postDatesVri) {
+    const sev = await queryBurnSeverityAtPoint(
+      lng,
+      lat,
+      wildfireParsed.info.fireYear
+    );
+    wildfireParsed.info.burnSeverity = sev.rating;
+    wildfireParsed.info.burnSeveritySource = sev.source;
+  }
   const parkFeat = getFiltered(7)[0];
 
   const designations: InspectDesignations = {

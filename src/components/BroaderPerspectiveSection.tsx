@@ -13,6 +13,10 @@ import {
 } from "@/data/bcForestryData";
 import { ExternalLink, MapPin, RefreshCw } from "lucide-react";
 import InfoTooltip from "@/components/InfoTooltip";
+import {
+  loadFomProjectsShared,
+  type RegionCatalogTotal,
+} from "@/lib/fomClientCache";
 
 type ViewMode = "bc-wide" | "regional";
 
@@ -69,6 +73,10 @@ export default function BroaderPerspectiveSection() {
   const [selectedRegionId, setSelectedRegionId] =
     useState<string>("west-coast");
   const [liveFoms, setLiveFoms] = useState<FomProjectSummary[] | null>(null);
+  const [regionCatalogTotals, setRegionCatalogTotals] = useState<Record<
+    string,
+    RegionCatalogTotal
+  > | null>(null);
   const [preassessedAt, setPreassessedAt] = useState<string | null>(null);
   const [fomError, setFomError] = useState<boolean>(false);
   const [auditedRegional, setAuditedRegional] =
@@ -77,41 +85,12 @@ export default function BroaderPerspectiveSection() {
   const loadLiveProposals = useCallback(async () => {
     setFomError(false);
     try {
-      let projects: FomProjectSummary[] | null = null;
-      let resolvedAt: string | null = null;
-      try {
-        const res = await fetch("/api/fom-projects", { cache: "no-store" });
-        if (res.ok) {
-          const data = await res.json();
-          if (data && Array.isArray(data.projects)) {
-            projects = data.projects as FomProjectSummary[];
-            resolvedAt =
-              data.preassessedAt || data.generatedAt || data.fetchedAt || null;
-          }
-        }
-      } catch {
-        // Fall back to static pre-assessed snapshot
+      const data = await loadFomProjectsShared({ scope: "default" });
+      setLiveFoms(data.projects);
+      if (data.regionCatalogTotals) {
+        setRegionCatalogTotals(data.regionCatalogTotals);
       }
-
-      if (!projects) {
-        const snapRes = await fetch("/data/preassessed_foms.json", {
-          cache: "no-store",
-        });
-        if (snapRes.ok) {
-          const snap = await snapRes.json();
-          if (snap && Array.isArray(snap.projects)) {
-            projects = snap.projects as FomProjectSummary[];
-            resolvedAt = snap.generatedAt || null;
-          }
-        }
-      }
-
-      if (projects) {
-        setLiveFoms(projects);
-        if (resolvedAt) setPreassessedAt(resolvedAt);
-      } else {
-        setFomError(true);
-      }
+      if (data.preassessedAt) setPreassessedAt(data.preassessedAt);
     } catch {
       setFomError(true);
     }
@@ -284,6 +263,22 @@ export default function BroaderPerspectiveSection() {
           .slice(0, 3)
           .map(([name, count]) => ({ name, count }));
 
+        const fullRegTotals = regionCatalogTotals?.[regId];
+        if (fullRegTotals) {
+          entry.totalListedCount = Math.max(
+            entry.totalListedCount,
+            fullRegTotals.totalListedCount
+          );
+          entry.totalBlockCount = Math.max(
+            entry.totalBlockCount,
+            fullRegTotals.totalBlockCount
+          );
+          entry.totalListedPlannedHa = Math.max(
+            entry.totalListedPlannedHa,
+            fullRegTotals.totalPlannedHa
+          );
+        }
+
         // If a region has 0 open proposals right now, count sensitivity across its listed proposals
         if (entry.openFomCount === 0 && entry.totalListedCount > 0) {
           for (const proj of liveFoms) {
@@ -296,6 +291,14 @@ export default function BroaderPerspectiveSection() {
           }
         }
       }
+
+      if (regionCatalogTotals) {
+        const fullListed = Object.values(regionCatalogTotals).reduce(
+          (s, r) => s + r.totalListedCount,
+          0
+        );
+        totals.totalListedCount = Math.max(totals.totalListedCount, fullListed);
+      }
     }
 
     return {
@@ -304,7 +307,7 @@ export default function BroaderPerspectiveSection() {
       unassignedTotal,
       totals,
     };
-  }, [liveFoms]);
+  }, [liveFoms, regionCatalogTotals]);
 
   const activeRegionLive = useMemo(
     () =>

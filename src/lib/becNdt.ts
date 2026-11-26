@@ -6,6 +6,13 @@ export type NaturalDisturbanceType =
   | "NDT5"
   | "UNKNOWN";
 
+export interface BecLandscapeRarityInfo {
+  tier: "critical_remnant" | "high_depletion_zone";
+  label: string;
+  note: string;
+  citation: string;
+}
+
 export interface BecNdtInfo {
   becZoneCode: string;
   becZoneName: string | null;
@@ -17,6 +24,7 @@ export interface BecNdtInfo {
   ancientThresholdYears: number;
   becRelativeHighSiThreshold: number;
   ecologicalNote?: string;
+  landscapeRarity?: BecLandscapeRarityInfo | null;
 }
 
 export const BEC_ZONE_FULL_NAMES: Record<string, string> = {
@@ -192,6 +200,38 @@ export function resolveBecNdt(
     ancientThresholdYears = 400;
   }
 
+  let landscapeRarity: BecLandscapeRarityInfo | null = null;
+  if (becZoneCode === "CDF") {
+    landscapeRarity = {
+      tier: "critical_remnant",
+      label: "Critically Rare Ecosystem (<1% historic old growth remaining)",
+      note: "Coastal Douglas-fir is BC's smallest and most heavily altered forest zone, with less than 1% of historic old growth remaining—well below the 10% remnant and 30% biodiversity risk benchmarks.",
+      citation: "BC Old Growth TAP (2021); Price, Holt & Daust (2020, 2021)",
+    };
+  } else if (
+    becZoneCode === "CWH" &&
+    (becSubzone.startsWith("xm") || becSubzone.startsWith("dm"))
+  ) {
+    landscapeRarity = {
+      tier: "high_depletion_zone",
+      label: "Heavily Depleted Low-Elevation Coastal Subzone",
+      note: "Dry maritime low-elevation coastal subzones (CWHxm/CWHdm) have experienced extensive historical harvest and commonly fall below landscape old-growth retention benchmarks.",
+      citation: "Price, Holt & Daust (2020, 2021); BC Old Growth TAP (2021)",
+    };
+  } else if (
+    (becZoneCode === "ICH" &&
+      (becSubzone.startsWith("xw") || becSubzone.startsWith("dw"))) ||
+    (becZoneCode === "IDF" && becSubzone.startsWith("xh")) ||
+    (becZoneCode === "PP" && becSubzone.startsWith("xh"))
+  ) {
+    landscapeRarity = {
+      tier: "high_depletion_zone",
+      label: "Heavily Depleted Dry Valley-Bottom Subzone",
+      note: "Warm, low-elevation southern interior valley-bottom forests are heavily altered across BC, making remaining mature and old-growth stands disproportionately rare.",
+      citation: "BC Old Growth TAP (2021); Price, Holt & Daust (2021)",
+    };
+  }
+
   return {
     becZoneCode: becZoneCode || "UNKNOWN",
     becZoneName: getBecZoneFullName(becZoneCode),
@@ -203,5 +243,6 @@ export function resolveBecNdt(
     ancientThresholdYears,
     becRelativeHighSiThreshold,
     ecologicalNote,
+    landscapeRarity,
   };
 }

@@ -6,7 +6,7 @@ import {
 } from "@/data/bcForestryData";
 import { resolveBecNdt } from "@/lib/becNdt";
 
-export const SENSITIVITY_METHODOLOGY_VERSION = "v2.0";
+export const SENSITIVITY_METHODOLOGY_VERSION = "v2.1";
 
 export const RISK_BADGE_STYLES: Record<
   EcologicalRiskCategory,
@@ -96,15 +96,36 @@ export function assessEcologicalRisk(input: {
   const si = forest.siteIndexMeters;
   const height = forest.canopyHeightMeters;
 
-  // Guard: Did a recent wildfire perimeter overlap this stand AFTER VRI baseline (or within 10 yrs if ref year missing)?
+  // Burn-severity-aware wildfire guard:
+  // Only qualify intact old-growth/TAP triggers as burned when severity is High/Medium,
+  // or when severity is unmapped outside fire-maintained NDT4 ecosystems.
   const recentWildfire = designations.recentWildfire;
-  const wildfireQualified = Boolean(recentWildfire?.postDatesVri);
-  const wildfireNotice =
-    wildfireQualified && recentWildfire
-      ? `Overlaps a ${recentWildfire.fireYear} wildfire area${recentWildfire.fireNumber ? ` (Fire #${recentWildfire.fireNumber})` : ""} that burned after the ${forest.referenceYear ?? "last"} forest survey — the recorded tree age (${age ?? "?"} yrs) may be from before the fire. Check Satellite view to see if this is post-fire salvage logging.`
-      : null;
+  const sev = recentWildfire?.burnSeverity ?? null;
+  const isStandReplacingBurn =
+    Boolean(recentWildfire?.postDatesVri) &&
+    (sev === "High" ||
+      sev === "Medium" ||
+      (sev === null && becInfo.ndt !== "NDT4"));
+  const wildfireQualified = isStandReplacingBurn;
 
-  // 1. Very High Sensitivity triggers (collect ALL matching reasons)
+  let wildfireNotice: string | null = null;
+  if (recentWildfire?.postDatesVri) {
+    const fireNum = recentWildfire.fireNumber
+      ? ` (Fire #${recentWildfire.fireNumber})`
+      : "";
+    const refYr = forest.referenceYear ?? "last";
+    if (sev === "High" || sev === "Medium") {
+      wildfireNotice = `Overlaps a ${recentWildfire.fireYear} wildfire area${fireNum} mapped as ${sev} burn severity after the ${refYr} forest survey — canopy mortality is likely; check Satellite view for post-fire salvage.`;
+    } else if (sev === "Low" || sev === "Unburned") {
+      wildfireNotice = `Overlaps a ${recentWildfire.fireYear} wildfire area${fireNum} mapped as ${sev} severity — canopy trees frequently survive low-intensity surface fires, so intact forest age is retained.`;
+    } else if (becInfo.ndt === "NDT4") {
+      wildfireNotice = `Overlaps a ${recentWildfire.fireYear} wildfire perimeter${fireNum} (burn severity unmapped) in a dry fire-maintained ecosystem — surface fires often spare old-growth trees; intact stand age is retained pending Satellite verification.`;
+    } else {
+      wildfireNotice = `Overlaps a ${recentWildfire.fireYear} wildfire area${fireNum} (burn severity unmapped) after the ${refYr} forest survey — recorded tree age (${age ?? "?"} yrs) may pre-date the fire; check Satellite view for post-fire salvage.`;
+    }
+  }
+
+  // 1. Very High Sensitivity triggers
   const veryHighReasons: string[] = [];
   if (designations.legalOgma) {
     veryHighReasons.push(
@@ -122,9 +143,14 @@ export function assessEcologicalRisk(input: {
     );
   }
   if (designations.tapPriorityDeferral && !wildfireQualified) {
+    const formattedSubs = designations.tapSubcategories.map((sub) =>
+      sub === "Remnant Old Ecosystem"
+        ? "Remnant Old Ecosystem (<10% historic old growth remaining in this BEC variant)"
+        : sub
+    );
     const subLabel =
-      designations.tapSubcategories.length > 0
-        ? designations.tapSubcategories.join(", ")
+      formattedSubs.length > 0
+        ? formattedSubs.join(", ")
         : designations.tapPriorityDeferral;
     veryHighReasons.push(
       `Overlaps an area recommended for temporary old-growth deferral by BC's 2021 scientific panel (${subLabel}).`
@@ -153,6 +179,15 @@ export function assessEcologicalRisk(input: {
       `Targets an ancient forest stand (${age} yrs old in ${ecoName}).`
     );
   }
+  if (
+    forest.isOldGrowth === true &&
+    !wildfireQualified &&
+    becInfo.landscapeRarity?.tier === "critical_remnant"
+  ) {
+    veryHighReasons.push(
+      `Targets old growth in a critically rare ecosystem (${ecoName}, <1% historic old growth remaining; BC TAP 2021 / Price et al. 2021).`
+    );
+  }
 
   if (veryHighReasons.length > 0) {
     if (wildfireNotice) veryHighReasons.unshift(wildfireNotice);
@@ -179,6 +214,25 @@ export function assessEcologicalRisk(input: {
   if (designations.communityWatershed) {
     highReasons.push(
       `Overlaps a community drinking-water watershed (${designations.communityWatershed}).`
+    );
+  }
+  if (
+    forest.isOldGrowth === true &&
+    !wildfireQualified &&
+    becInfo.landscapeRarity?.tier === "high_depletion_zone"
+  ) {
+    highReasons.push(
+      `Targets old growth (${age ?? "?"} yrs) in a heavily depleted low-elevation subzone (${forest.becZone || ecoName}; landscape rarity benchmark, Price et al. 2009, 2021).`
+    );
+  }
+  if (
+    !wildfireQualified &&
+    becInfo.landscapeRarity?.tier === "critical_remnant" &&
+    age !== null &&
+    age >= 81
+  ) {
+    highReasons.push(
+      `Targets mature forest (${age} yrs) in a critically depleted ecosystem (${ecoName}, <1% old growth remaining).`
     );
   }
   if (
@@ -231,7 +285,7 @@ export function assessEcologicalRisk(input: {
 
   // 3. Moderate Sensitivity triggers
   const moderateReasons: string[] = [];
-  if (wildfireNotice) {
+  if (wildfireNotice && wildfireQualified) {
     moderateReasons.push(wildfireNotice);
     if (designations.tapPriorityDeferral) {
       moderateReasons.push(
@@ -247,6 +301,9 @@ export function assessEcologicalRisk(input: {
   }
 
   if (moderateReasons.length > 0) {
+    if (wildfireNotice && !wildfireQualified) {
+      moderateReasons.unshift(wildfireNotice);
+    }
     return {
       category: "moderate",
       label: RISK_BADGE_STYLES.moderate.label,
@@ -268,16 +325,21 @@ export function assessEcologicalRisk(input: {
     return createUnassessedRisk(msg, failedLayers);
   }
 
-  // 5. Lower Sensitivity (never claim "no overlap" for layers that failed to respond)
+  // 5. Lower Sensitivity
   const lowerReason = isPartialAssessment
     ? `Targets younger second-growth trees (${age ?? "≤80"} yrs old). Note: this check is incomplete because provincial data was temporarily unavailable for ${failedLayers.join(", ")}.`
     : `Targets younger second-growth trees (${age ?? "≤80"} yrs old) with no mapped overlap with parks, protected old growth, wildlife habitat, or community drinking-water watersheds.`;
+
+  const lowReasons =
+    wildfireNotice && !wildfireQualified
+      ? [wildfireNotice, lowerReason]
+      : [lowerReason];
 
   return {
     category: "low",
     label: RISK_BADGE_STYLES.low.label,
     rank: 1,
-    reasons: [lowerReason],
+    reasons: lowReasons,
     assessmentScope,
     methodologyVersion: SENSITIVITY_METHODOLOGY_VERSION,
     isPartialAssessment,

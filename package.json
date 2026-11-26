@@ -10,6 +10,7 @@
     "preassess": "node scripts/preassess-foms.mjs"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "lucide-react": "^0.460.0",
     "maplibre-gl": "^4.7.1",
     "next": "^15.0.3",

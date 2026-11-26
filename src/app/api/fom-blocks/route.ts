@@ -11,8 +11,14 @@ import {
   queryBcgwWfs,
   screenLocationRisk,
 } from "@/lib/bcgw";
+import { createMemoryRateLimiter, getClientIp } from "@/lib/requestGuards";
 
 export const maxDuration = 30;
+
+const checkFomBlocksRateLimit = createMemoryRateLimiter({
+  maxRequests: 60,
+  windowMs: 60_000,
+});
 
 function getBlockArea(feat: RawGeoJSONFeature): number {
   const p = feat.properties || {};
@@ -44,6 +50,14 @@ function selectRepresentativeBlocks(
 }
 
 export async function GET(request: NextRequest) {
+  const rate = checkFomBlocksRateLimit(getClientIp(request));
+  if (!rate.allowed) {
+    return NextResponse.json(
+      { error: "Too many proposal requests. Please wait a minute and retry." },
+      { status: 429, headers: { "Retry-After": String(rate.retryAfterSec) } }
+    );
+  }
+
   const { searchParams } = new URL(request.url);
   const fomId = (searchParams.get("fomId") || "").trim();
 
@@ -234,9 +248,10 @@ export async function GET(request: NextRequest) {
       }
     );
   } catch (err) {
-    return NextResponse.json(
-      { error: `Failed to fetch FOM blocks for #${fomId}: ${String(err)}` },
-      { status: 502 }
-    );
+    const errorMessage =
+      process.env.NODE_ENV === "production"
+        ? `Unable to load cutblocks for proposal #${fomId}. Please try again shortly.`
+        : `Failed to fetch FOM blocks for #${fomId}: ${String(err)}`;
+    return NextResponse.json({ error: errorMessage }, { status: 502 });
   }
 }

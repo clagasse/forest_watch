@@ -19,6 +19,12 @@ import { createUnassessedRisk } from "@/lib/riskAssessment";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
+interface RegionCatalogTotal {
+  totalListedCount: number;
+  totalBlockCount: number;
+  totalPlannedHa: number;
+}
+
 interface CachedFomResponse {
   projects: FomProjectSummary[];
   source: string;
@@ -31,7 +37,7 @@ interface CachedFomResponse {
 let cachedResponse: CachedFomResponse | null = null;
 const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
 const SNAPSHOT_FRESH_MS = 6 * 60 * 60 * 1000; // 6 hours
-const NO_STORE_HEADERS = {
+const CACHE_HEADERS = {
   "Cache-Control":
     process.env.NODE_ENV === "production"
       ? "public, max-age=60, s-maxage=300, stale-while-revalidate=900"
@@ -51,6 +57,74 @@ function getSnapshotMtimeMs(): number | null {
   } catch {
     return null;
   }
+}
+
+function buildFomApiPayload(
+  allProjects: FomProjectSummary[],
+  meta: {
+    source: string;
+    fetchedAt: string;
+    preassessedAt: string | null;
+  },
+  scope: "default" | "all"
+) {
+  const regionCatalogTotals: Record<string, RegionCatalogTotal> = {};
+
+  const stripBoilerplate = (proj: FomProjectSummary): FomProjectSummary => {
+    const isOpen = isFomOpenForComment(proj);
+    const rank = proj.riskAssessment?.rank ?? 0;
+    if (!isOpen && rank === 0 && proj.riskAssessment) {
+      const { riskAssessment: _omitted, ...rest } = proj;
+      void _omitted;
+      return rest;
+    }
+    return proj;
+  };
+
+  const openList: FomProjectSummary[] = [];
+  const closedList: FomProjectSummary[] = [];
+
+  for (const proj of allProjects) {
+    const regId =
+      proj.regionId || matchDistrictToRegionId(proj.district) || "unassigned";
+    const blocks = typeof proj.blockCount === "number" ? proj.blockCount : 0;
+    const ha =
+      typeof proj.totalPlannedHa === "number" && proj.totalPlannedHa > 0
+        ? proj.totalPlannedHa
+        : 0;
+
+    if (!regionCatalogTotals[regId]) {
+      regionCatalogTotals[regId] = {
+        totalListedCount: 0,
+        totalBlockCount: 0,
+        totalPlannedHa: 0,
+      };
+    }
+    regionCatalogTotals[regId].totalListedCount += 1;
+    regionCatalogTotals[regId].totalBlockCount += blocks;
+    regionCatalogTotals[regId].totalPlannedHa += ha;
+
+    const cleaned = stripBoilerplate(proj);
+    if (isFomOpenForComment(proj)) {
+      openList.push(cleaned);
+    } else {
+      closedList.push(cleaned);
+    }
+  }
+
+  const projects =
+    scope === "all"
+      ? [...openList, ...closedList]
+      : [...openList, ...closedList.slice(0, 120)];
+
+  return {
+    projects,
+    source: meta.source,
+    fetchedAt: meta.fetchedAt,
+    preassessedAt: meta.preassessedAt,
+    totalCatalogCount: allProjects.length,
+    regionCatalogTotals,
+  };
 }
 
 async function screenNewOpenProposals(
@@ -118,23 +192,35 @@ async function screenNewOpenProposals(
 }
 
 export async function GET(request: NextRequest) {
-  const forceRefresh = request.nextUrl.searchParams.get("refresh") === "1";
+  const refreshRequested = request.nextUrl.searchParams.get("refresh") === "1";
+  const refreshSecret = process.env.FOM_REFRESH_SECRET;
+  const headerSecret = request.headers.get("x-refresh-secret");
+  const canForceRefresh =
+    refreshRequested &&
+    (process.env.NODE_ENV !== "production" ||
+      (Boolean(refreshSecret) && headerSecret === refreshSecret));
+
+  const scopeParam = request.nextUrl.searchParams.get("scope");
+  const scope: "default" | "all" = scopeParam === "all" ? "all" : "default";
   const currentMtimeMs = getSnapshotMtimeMs();
 
   if (
-    !forceRefresh &&
+    !canForceRefresh &&
     cachedResponse &&
     Date.now() < cachedResponse.expiresAt &&
     cachedResponse.snapshotMtimeMs === currentMtimeMs
   ) {
     return NextResponse.json(
-      {
-        projects: cachedResponse.projects,
-        source: cachedResponse.source,
-        fetchedAt: cachedResponse.fetchedAt,
-        preassessedAt: cachedResponse.preassessedAt,
-      },
-      { headers: NO_STORE_HEADERS }
+      buildFomApiPayload(
+        cachedResponse.projects,
+        {
+          source: cachedResponse.source,
+          fetchedAt: cachedResponse.fetchedAt,
+          preassessedAt: cachedResponse.preassessedAt,
+        },
+        scope
+      ),
+      { headers: CACHE_HEADERS }
     );
   }
 
@@ -147,7 +233,7 @@ export async function GET(request: NextRequest) {
     : Number.POSITIVE_INFINITY;
 
   // Fast path: disk snapshot is fresh (< 6 hours old) and not forced to refresh
-  if (!forceRefresh && snapshot && snapshotAgeMs < SNAPSHOT_FRESH_MS) {
+  if (!canForceRefresh && snapshot && snapshotAgeMs < SNAPSHOT_FRESH_MS) {
     cachedResponse = {
       projects: snapshot.projects,
       source: "preassessed_snapshot",
@@ -157,13 +243,16 @@ export async function GET(request: NextRequest) {
       expiresAt: Date.now() + CACHE_TTL_MS,
     };
     return NextResponse.json(
-      {
-        projects: snapshot.projects,
-        source: "preassessed_snapshot",
-        fetchedAt: snapshot.generatedAt,
-        preassessedAt: snapshot.generatedAt,
-      },
-      { headers: NO_STORE_HEADERS }
+      buildFomApiPayload(
+        snapshot.projects,
+        {
+          source: "preassessed_snapshot",
+          fetchedAt: snapshot.generatedAt,
+          preassessedAt: snapshot.generatedAt,
+        },
+        scope
+      ),
+      { headers: CACHE_HEADERS }
     );
   }
 
@@ -208,13 +297,16 @@ export async function GET(request: NextRequest) {
     };
 
     return NextResponse.json(
-      {
-        projects: enriched,
-        source,
-        fetchedAt: nowIso,
-        preassessedAt,
-      },
-      { headers: NO_STORE_HEADERS }
+      buildFomApiPayload(
+        enriched,
+        {
+          source,
+          fetchedAt: nowIso,
+          preassessedAt,
+        },
+        scope
+      ),
+      { headers: CACHE_HEADERS }
     );
   } catch (err) {
     if (snapshot) {
@@ -227,15 +319,23 @@ export async function GET(request: NextRequest) {
         expiresAt: Date.now() + CACHE_TTL_MS,
       };
       return NextResponse.json(
-        {
-          projects: snapshot.projects,
-          source: "preassessed_snapshot",
-          fetchedAt: snapshot.generatedAt,
-          preassessedAt: snapshot.generatedAt,
-        },
-        { headers: NO_STORE_HEADERS }
+        buildFomApiPayload(
+          snapshot.projects,
+          {
+            source: "preassessed_snapshot",
+            fetchedAt: snapshot.generatedAt,
+            preassessedAt: snapshot.generatedAt,
+          },
+          scope
+        ),
+        { headers: CACHE_HEADERS }
       );
     }
+
+    const errorMessage =
+      process.env.NODE_ENV === "production"
+        ? "BC FOM proposals are temporarily unavailable. Please try again shortly."
+        : `Unable to reach BC FOM API or DataBC WFS (${String(err)}).`;
 
     return NextResponse.json(
       {
@@ -243,9 +343,9 @@ export async function GET(request: NextRequest) {
         source: "bcgw_wfs",
         fetchedAt: new Date().toISOString(),
         preassessedAt: null,
-        error: `Unable to reach BC FOM API or DataBC WFS (${String(err)}).`,
+        error: errorMessage,
       },
-      { status: 502, headers: NO_STORE_HEADERS }
+      { status: 502, headers: CACHE_HEADERS }
     );
   }
 }

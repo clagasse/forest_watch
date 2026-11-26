@@ -283,6 +283,8 @@ export interface InspectForestProperties {
   becRelativeHighSiThreshold: number | null;
   isHighProdForBec: boolean | null;
   ecologicalNote: string | null;
+  landscapeRarityLabel?: string | null;
+  landscapeRarityNote?: string | null;
   areaHa: number | null;
   oldGrowthThresholdYears: number | null;
   isOldGrowth: boolean | null;
@@ -294,6 +296,8 @@ export interface WildfireOverlapInfo {
   fireNumber: string | null;
   source: "current" | "historical";
   postDatesVri: boolean;
+  burnSeverity?: "High" | "Medium" | "Low" | "Unburned" | null;
+  burnSeveritySource?: "historical_1yr" | "same_year" | null;
 }
 
 export interface InspectDesignations {
@@ -326,6 +330,7 @@ export interface InspectRawAuditRecords {
   uwr?: Record<string, unknown> | null;
   communityWatershed?: Record<string, unknown> | null;
   wildfire?: Record<string, unknown> | null;
+  burnSeverity?: Record<string, unknown> | null;
 }
 
 export interface InspectResult {
@@ -471,6 +476,12 @@ export const BCGW_LAYER_CATALOG = [
     layerId: "WHSE_LAND_AND_NATURAL_RESOURCE.PROT_HISTORICAL_FIRE_POLYS_SP",
     description:
       "Official BC Wildfire Service burn boundaries used to check whether a forest burned after its last inventory survey.",
+  },
+  {
+    name: "BC Wildfire Burn Severity",
+    layerId: "WHSE_FOREST_VEGETATION.VEG_BURN_SEVERITY_SP",
+    description:
+      "One-year post-fire satellite burn severity classes (Unburned, Low, Medium, High) used to distinguish stand-replacing wildfires from low-intensity surface fires.",
   },
   {
     name: "BC Forestry Regions (8 Official Regions)",

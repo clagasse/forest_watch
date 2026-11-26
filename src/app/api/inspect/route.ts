@@ -1,63 +1,44 @@
 import { NextRequest, NextResponse } from "next/server";
 import { inspectLocation } from "@/lib/bcgw";
+import { createMemoryRateLimiter, getClientIp } from "@/lib/requestGuards";
 import { createUnassessedRisk } from "@/lib/riskAssessment";
 
 export const maxDuration = 30;
 
-const RATE_WINDOW_MS = 60_000;
-const RATE_MAX_REQUESTS = 60;
-const rateBuckets = new Map<string, { count: number; resetAt: number }>();
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now();
-  if (rateBuckets.size > 500) {
-    for (const [k, v] of rateBuckets.entries()) {
-      if (v.resetAt <= now) rateBuckets.delete(k);
-    }
-  }
-  const existing = rateBuckets.get(ip);
-  if (!existing || existing.resetAt <= now) {
-    rateBuckets.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
-    return true;
-  }
-  if (existing.count >= RATE_MAX_REQUESTS) {
-    return false;
-  }
-  existing.count += 1;
-  return true;
-}
+const checkInspectRateLimit = createMemoryRateLimiter({
+  maxRequests: 60,
+  windowMs: 60_000,
+});
 
 export async function GET(request: NextRequest) {
-  const forwarded = request.headers.get("x-forwarded-for");
-  const clientIp =
-    (forwarded ? forwarded.split(",")[0].trim() : null) ||
-    request.headers.get("x-real-ip") ||
-    "unknown";
-
-  if (!checkRateLimit(clientIp)) {
+  const rate = checkInspectRateLimit(getClientIp(request));
+  if (!rate.allowed) {
     return NextResponse.json(
       { error: "Too many inspection requests. Please wait a minute and retry." },
-      { status: 429, headers: { "Retry-After": "60" } }
+      { status: 429, headers: { "Retry-After": String(rate.retryAfterSec) } }
     );
   }
 
   const { searchParams } = new URL(request.url);
-  const lng = Number(searchParams.get("lng"));
-  const lat = Number(searchParams.get("lat"));
+  const rawLng = Number(searchParams.get("lng"));
+  const rawLat = Number(searchParams.get("lat"));
 
   if (
-    !Number.isFinite(lng) ||
-    !Number.isFinite(lat) ||
-    lng < -140 ||
-    lng > -113 ||
-    lat < 48 ||
-    lat > 61
+    !Number.isFinite(rawLng) ||
+    !Number.isFinite(rawLat) ||
+    rawLng < -140 ||
+    rawLng > -113 ||
+    rawLat < 48 ||
+    rawLat > 61
   ) {
     return NextResponse.json(
       { error: "Coordinates must be within British Columbia" },
       { status: 400 }
     );
   }
+
+  const lng = Math.round(rawLng * 10000) / 10000;
+  const lat = Math.round(rawLat * 10000) / 10000;
 
   try {
     const result = await inspectLocation(lng, lat);
@@ -68,6 +49,11 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (err) {
+    const errorMessage =
+      process.env.NODE_ENV === "production"
+        ? "BC Government forest records are temporarily unavailable. Please try again shortly."
+        : `DataBC lookup failed: ${String(err)}`;
+
     return NextResponse.json(
       {
         coordinates: [lng, lat],
@@ -89,8 +75,8 @@ export async function GET(request: NextRequest) {
           legalOgma: null,
           protectedPark: null,
         },
-        riskAssessment: createUnassessedRisk(`DataBC lookup failed: ${String(err)}`),
-        error: `DataBC lookup failed: ${String(err)}`,
+        riskAssessment: createUnassessedRisk(errorMessage),
+        error: errorMessage,
       },
       { status: 502 }
     );

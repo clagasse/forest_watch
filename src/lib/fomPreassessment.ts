@@ -565,6 +565,59 @@ export async function screenFomProjectBlocks(
   };
 }
 
+async function fetchFomProjectDetailDates(fomId: string): Promise<{
+  commentOpenDate?: string;
+  commentCloseDate?: string;
+  districtName?: string;
+}> {
+  try {
+    const resp = await fetch(
+      `https://fom.nrs.gov.bc.ca/api/project/${encodeURIComponent(fomId)}`,
+      {
+        headers: {
+          "User-Agent": "BC-Forestry-Watch/2.1 (Open Data Public Tool)",
+          Accept: "application/json",
+        },
+        signal: AbortSignal.timeout(6000),
+        cache: "no-store",
+      }
+    );
+    if (!resp.ok) return {};
+    const detail = (await resp.json()) as Record<string, unknown>;
+    const notice =
+      detail.notice && typeof detail.notice === "object"
+        ? (detail.notice as Record<string, unknown>)
+        : undefined;
+
+    const openRaw = extractString(
+      detail.commentingOpenDate,
+      detail.commentStartDate,
+      notice?.commentingOpenDate,
+      notice?.commentStartDate
+    );
+    const closeRaw = extractString(
+      detail.commentingClosedDate,
+      detail.commentEndDate,
+      detail.commentCloseDate,
+      notice?.commentingClosedDate,
+      notice?.commentEndDate
+    );
+    const districtName = extractString(
+      detail.districtName,
+      detail.naturalResourceDistrict,
+      detail.district
+    );
+
+    return {
+      commentOpenDate: openRaw ? openRaw.slice(0, 10) : undefined,
+      commentCloseDate: closeRaw ? closeRaw.slice(0, 10) : undefined,
+      districtName,
+    };
+  } catch {
+    return {};
+  }
+}
+
 export async function generatePreassessedSnapshot(options?: {
   limit?: number;
   maxBlocks?: number;
@@ -597,10 +650,25 @@ export async function generatePreassessedSnapshot(options?: {
       const idx = nextIdx++;
       const proj = targets[idx];
       const blocks = blocksByFomId.get(proj.fomId) || [];
-      const screened = await screenFomProjectBlocks(proj, blocks, maxBlocks);
-      screenedMap.set(proj.fomId, screened);
+      const [screened, detailDates] = await Promise.all([
+        screenFomProjectBlocks(proj, blocks, maxBlocks),
+        fetchFomProjectDetailDates(proj.fomId),
+      ]);
+      const enrichedScreened: FomProjectSummary = {
+        ...screened,
+        commentOpenDate:
+          detailDates.commentOpenDate || screened.commentOpenDate,
+        commentCloseDate:
+          detailDates.commentCloseDate || screened.commentCloseDate,
+        district:
+          screened.district === "BC Natural Resource District" &&
+          detailDates.districtName
+            ? detailDates.districtName
+            : screened.district,
+      };
+      screenedMap.set(proj.fomId, enrichedScreened);
       done += 1;
-      options?.onProgress?.(done, targets.length, screened);
+      options?.onProgress?.(done, targets.length, enrichedScreened);
     }
   }
 

@@ -19,6 +19,7 @@ import {
   OVERLAY_STYLE_MAP,
 } from "@/data/bcForestryData";
 import { RISK_BADGE_STYLES, createUnassessedRisk } from "@/lib/riskAssessment";
+import { loadFomProjectsShared } from "@/lib/fomClientCache";
 import {
   Layers,
   ExternalLink,
@@ -40,13 +41,17 @@ import {
   Flame,
   HelpCircle,
   Link2,
+  Mail,
   Map as MapIcon,
+  MapPin,
   List,
   FileText,
+  PenLine,
 } from "lucide-react";
 import InfoTooltip from "@/components/InfoTooltip";
+import CommentDraftModal from "@/components/CommentDraftModal";
 
-type BasemapId = "topo" | "satellite" | "osm";
+type BasemapId = "topo" | "satellite";
 
 interface LiveGeoJSONFile {
   filename: string;
@@ -74,12 +79,6 @@ const BASEMAPS: Record<
     ],
     attribution:
       "Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics | Data: BC Geographic Warehouse (DataBC)",
-  },
-  osm: {
-    label: "Street",
-    tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
-    attribution:
-      "&copy; OpenStreetMap contributors | Data: BC Geographic Warehouse (DataBC)",
   },
 };
 
@@ -453,20 +452,62 @@ function getStageBadgeStyle(stage: CutblockStage): string {
   }
 }
 
+function haversineKm(
+  lng1: number,
+  lat1: number,
+  lng2: number,
+  lat2: number
+): number {
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  const R = 6371;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
 export default function ForestryMapExplorer() {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const layersPopoverRef = useRef<HTMLDivElement | null>(null);
+  const placePopoverRef = useRef<HTMLDivElement | null>(null);
 
   const [basemap, setBasemap] = useState<BasemapId>("topo");
+  const [mapLoaded, setMapLoaded] = useState(false);
   const [layersOpen, setLayersOpen] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
   const [legendOpen, setLegendOpen] = useState(true);
+  const [draftModalOpen, setDraftModalOpen] = useState(false);
   const [mobilePane, setMobilePane] = useState<"map" | "proposals" | "details">(
     "map"
   );
   const [mobileBannerDismissed, setMobileBannerDismissed] = useState(false);
   const [overlayOpacity, setOverlayOpacity] = useState<number>(0.82);
+
+  // "What's Near Me?" BC town/address search state
+  const [placeQuery, setPlaceQuery] = useState("");
+  const [placeResults, setPlaceResults] = useState<
+    Array<{
+      label: string;
+      locality: string;
+      lng: number;
+      lat: number;
+      precision: string;
+    }>
+  >([]);
+  const [placeLoading, setPlaceLoading] = useState(false);
+  const [placeOpen, setPlaceOpen] = useState(false);
+  const [nearLocation, setNearLocation] = useState<{
+    label: string;
+    lng: number;
+    lat: number;
+    radiusKm: number;
+  } | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.innerWidth < 768) {
@@ -567,67 +608,29 @@ export default function ForestryMapExplorer() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [layersOpen]);
 
-  // Fetch live BC-wide FOM projects on mount (with static snapshot fallback for GitHub Pages)
-  const fetchFomProjects = useCallback(async () => {
-    setFomLoading(true);
-    setFomError(null);
-    try {
-      let data: {
-        projects?: FomProjectSummary[];
-        source?: string;
-        preassessedAt?: string;
-        generatedAt?: string;
-        fetchedAt?: string;
-        error?: string;
-      } | null = null;
-
+  // Fetch live BC-wide FOM projects on mount (deduplicated & slim by default)
+  const fetchFomProjects = useCallback(
+    async (force = false, scopeOverride?: "default" | "all") => {
+      setFomLoading(true);
+      setFomError(null);
       try {
-        const resp = await fetch("/api/fom-projects", { cache: "no-store" });
-        if (resp.ok) {
-          const parsed = await resp.json();
-          if (parsed && Array.isArray(parsed.projects) && !parsed.error) {
-            data = parsed;
-          }
-        }
-      } catch {
-        // Fall through to static snapshot
-      }
-
-      if (!data) {
-        const snapResp = await fetch("/data/preassessed_foms.json", {
-          cache: "no-store",
-        });
-        if (snapResp.ok) {
-          const snap = await snapResp.json();
-          if (snap && Array.isArray(snap.projects)) {
-            data = {
-              projects: snap.projects,
-              source: "preassessed_snapshot",
-              preassessedAt: snap.generatedAt,
-            };
-          }
-        }
-      }
-
-      if (!data || !Array.isArray(data.projects)) {
-        setFomError("Unable to load live BC FOM proposals");
-        setFomProjects([]);
-      } else {
+        const scope = scopeOverride ?? (fomOnlyOpen ? "default" : "all");
+        const data = await loadFomProjectsShared({ scope, force });
         setFomProjects(data.projects);
         setFomSource(data.source || "preassessed_snapshot");
-        setPreassessedAt(
-          data.preassessedAt || data.generatedAt || data.fetchedAt || null
-        );
+        setPreassessedAt(data.preassessedAt || null);
+      } catch {
+        setFomError("Unable to load live BC FOM proposals");
+        setFomProjects([]);
+      } finally {
+        setFomLoading(false);
       }
-    } catch {
-      setFomError("Network error loading live BC FOM proposals");
-    } finally {
-      setFomLoading(false);
-    }
-  }, []);
+    },
+    [fomOnlyOpen]
+  );
 
   useEffect(() => {
-    fetchFomProjects();
+    fetchFomProjects(false);
   }, [fetchFomProjects]);
 
   useEffect(() => {
@@ -666,13 +669,70 @@ export default function ForestryMapExplorer() {
     fetchAvailableGeoJSONFiles();
   }, [fetchAvailableGeoJSONFiles]);
 
-  // Base FOM list filtered by open status and search text (used for risk chip counts)
+  useEffect(() => {
+    if (!placeOpen) return;
+    const handleOutsidePlace = (e: MouseEvent) => {
+      if (
+        placePopoverRef.current &&
+        !placePopoverRef.current.contains(e.target as Node)
+      ) {
+        setPlaceOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutsidePlace);
+    return () => document.removeEventListener("mousedown", handleOutsidePlace);
+  }, [placeOpen]);
+
+  useEffect(() => {
+    const trimmed = placeQuery.trim();
+    if (trimmed.length < 2) {
+      setPlaceResults([]);
+      setPlaceLoading(false);
+      return;
+    }
+    const controller = new AbortController();
+    const timer = setTimeout(async () => {
+      setPlaceLoading(true);
+      try {
+        const resp = await fetch(
+          `/api/geocode?q=${encodeURIComponent(trimmed)}`,
+          { signal: controller.signal }
+        );
+        if (resp.ok) {
+          const data = await resp.json();
+          setPlaceResults(Array.isArray(data.results) ? data.results : []);
+          setPlaceOpen(true);
+        }
+      } catch {
+        // Ignore aborted or failed geocode requests
+      } finally {
+        setPlaceLoading(false);
+      }
+    }, 300);
+
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [placeQuery]);
+
+  // Base FOM list filtered by open status, search text, and optional Near-Me radius
   const baseFomProjects = useMemo(() => {
     const q = fomSearch.trim().toLowerCase();
     return fomProjects.filter((p) => {
       if (fomOnlyOpen) {
         const deadline = getDaysRemaining(p.commentCloseDate, p.workflowState);
         if (!deadline.isOpen) return false;
+      }
+      if (nearLocation) {
+        if (!p.center) return false;
+        const dist = haversineKm(
+          nearLocation.lng,
+          nearLocation.lat,
+          p.center[0],
+          p.center[1]
+        );
+        if (dist > nearLocation.radiusKm) return false;
       }
       if (!q) return true;
       return (
@@ -682,7 +742,7 @@ export default function ForestryMapExplorer() {
         p.fomId.toLowerCase().includes(q)
       );
     });
-  }, [fomProjects, fomSearch, fomOnlyOpen]);
+  }, [fomProjects, fomSearch, fomOnlyOpen, nearLocation]);
 
   const riskCounts = useMemo(() => {
     const counts: Record<EcologicalRiskCategory, number> = {
@@ -814,8 +874,10 @@ export default function ForestryMapExplorer() {
       updateMapHighlight(null, [lng, lat]);
 
       try {
+        const qLng = Number(lng.toFixed(4));
+        const qLat = Number(lat.toFixed(4));
         const resp = await fetch(
-          `/api/inspect?lng=${encodeURIComponent(lng)}&lat=${encodeURIComponent(lat)}`
+          `/api/inspect?lng=${encodeURIComponent(qLng)}&lat=${encodeURIComponent(qLat)}`
         );
         const data: InspectResult = await resp.json();
         setInspectResult(data);
@@ -1021,12 +1083,6 @@ export default function ForestryMapExplorer() {
             tileSize: 256,
             attribution: BASEMAPS.satellite.attribution,
           },
-          "basemap-osm": {
-            type: "raster",
-            tiles: BASEMAPS.osm.tiles,
-            tileSize: 256,
-            attribution: BASEMAPS.osm.attribution,
-          },
           ...initialWmsSources,
         },
         layers: [
@@ -1045,12 +1101,6 @@ export default function ForestryMapExplorer() {
             id: "layer-satellite",
             type: "raster",
             source: "basemap-satellite",
-            layout: { visibility: "none" },
-          },
-          {
-            id: "layer-osm",
-            type: "raster",
-            source: "basemap-osm",
             layout: { visibility: "none" },
           },
           ...initialWmsLayers,
@@ -1121,13 +1171,168 @@ export default function ForestryMapExplorer() {
           "circle-stroke-width": 2,
         },
       });
+
+      // Open FOM Proposal Pins & Sensitivity Clusters (no glyph/font URL needed)
+      map.addSource("fom-proposal-pins", {
+        type: "geojson",
+        data: { type: "FeatureCollection", features: [] },
+        cluster: true,
+        clusterMaxZoom: 10,
+        clusterRadius: 42,
+        clusterProperties: {
+          maxRank: ["max", ["get", "rank"]],
+        },
+      });
+
+      const rankColorExpr: maplibregl.ExpressionSpecification = [
+        "match",
+        ["coalesce", ["get", "maxRank"], ["get", "rank"], 0],
+        4,
+        "#be123c",
+        3,
+        "#b45309",
+        2,
+        "#a16207",
+        1,
+        "#15803d",
+        "#64748b",
+      ];
+
+      map.addLayer({
+        id: "fom-cluster-halo",
+        type: "circle",
+        source: "fom-proposal-pins",
+        filter: ["has", "point_count"],
+        paint: {
+          "circle-color": rankColorExpr,
+          "circle-opacity": 0.24,
+          "circle-radius": [
+            "step",
+            ["get", "point_count"],
+            16,
+            5,
+            20,
+            15,
+            24,
+          ],
+        },
+      });
+
+      map.addLayer({
+        id: "fom-clusters",
+        type: "circle",
+        source: "fom-proposal-pins",
+        filter: ["has", "point_count"],
+        paint: {
+          "circle-color": rankColorExpr,
+          "circle-radius": [
+            "step",
+            ["get", "point_count"],
+            10,
+            5,
+            13,
+            15,
+            16,
+          ],
+          "circle-stroke-width": 2,
+          "circle-stroke-color": "#ffffff",
+        },
+      });
+
+      map.addLayer({
+        id: "fom-unclustered-point",
+        type: "circle",
+        source: "fom-proposal-pins",
+        filter: ["!", ["has", "point_count"]],
+        paint: {
+          "circle-color": rankColorExpr,
+          "circle-radius": 6.5,
+          "circle-stroke-width": 2,
+          "circle-stroke-color": "#ffffff",
+        },
+      });
+
+      const hoverPopup = new maplibregl.Popup({
+        closeButton: false,
+        closeOnClick: false,
+        offset: 12,
+      });
+
+      map.on("mouseenter", "fom-clusters", (e) => {
+        map.getCanvas().style.cursor = "pointer";
+        const feat = e.features?.[0];
+        if (!feat || feat.geometry.type !== "Point") return;
+        const count = Number(feat.properties?.point_count || 0);
+        hoverPopup
+          .setLngLat(feat.geometry.coordinates as [number, number])
+          .setText(`${count} open proposals · Click to expand`)
+          .addTo(map);
+      });
+
+      map.on("mouseleave", "fom-clusters", () => {
+        map.getCanvas().style.cursor = "crosshair";
+        hoverPopup.remove();
+      });
+
+      map.on("mouseenter", "fom-unclustered-point", (e) => {
+        map.getCanvas().style.cursor = "pointer";
+        const feat = e.features?.[0];
+        if (!feat || feat.geometry.type !== "Point") return;
+        const name = String(feat.properties?.name || "Open Proposal");
+        const risk = String(feat.properties?.riskLabel || "");
+        const district = String(feat.properties?.district || "");
+        hoverPopup
+          .setLngLat(feat.geometry.coordinates as [number, number])
+          .setText(`${risk ? `${risk} · ` : ""}${name}${district ? ` (${district})` : ""}`)
+          .addTo(map);
+      });
+
+      map.on("mouseleave", "fom-unclustered-point", () => {
+        map.getCanvas().style.cursor = "crosshair";
+        hoverPopup.remove();
+      });
+
+      setMapLoaded(true);
     });
 
     map.on("zoomend", () => {
       setMapZoom(map.getZoom());
     });
 
-    map.on("click", (e) => {
+    map.on("click", async (e) => {
+      const hitPins = map.queryRenderedFeatures(e.point, {
+        layers: ["fom-clusters", "fom-unclustered-point"],
+      });
+      if (hitPins.length > 0) {
+        const top = hitPins[0];
+        if (top.layer.id === "fom-clusters" && top.geometry.type === "Point") {
+          const clusterId = Number(top.properties?.cluster_id);
+          const src = map.getSource("fom-proposal-pins") as
+            | maplibregl.GeoJSONSource
+            | undefined;
+          if (src && Number.isFinite(clusterId)) {
+            try {
+              const zoom = await src.getClusterExpansionZoom(clusterId);
+              map.easeTo({
+                center: top.geometry.coordinates as [number, number],
+                zoom: Math.min(zoom + 0.6, 13),
+                duration: 500,
+              });
+            } catch {
+              // Ignore cluster zoom errors
+            }
+          }
+          return;
+        }
+        if (top.layer.id === "fom-unclustered-point") {
+          const fomId = String(top.properties?.fomId || "");
+          const proj = fomProjectsRef.current.find((p) => p.fomId === fomId);
+          if (proj) {
+            void handleSelectFomProjectRef.current(proj);
+            return;
+          }
+        }
+      }
       runLiveInspect(e.lngLat.lng, e.lngLat.lat);
     });
 
@@ -1147,7 +1352,6 @@ export default function ForestryMapExplorer() {
     const mapping: Record<BasemapId, string> = {
       topo: "layer-topo",
       satellite: "layer-satellite",
-      osm: "layer-osm",
     };
     (Object.keys(mapping) as BasemapId[]).forEach((k) => {
       if (map.getLayer(mapping[k])) {
@@ -1297,6 +1501,15 @@ export default function ForestryMapExplorer() {
     setLayersOpen(false);
   };
 
+  const fomProjectsRef = useRef<FomProjectSummary[]>([]);
+  useEffect(() => {
+    fomProjectsRef.current = fomProjects;
+  }, [fomProjects]);
+
+  const handleSelectFomProjectRef = useRef<
+    (project: FomProjectSummary) => Promise<void>
+  >(async () => {});
+
   // Select FOM project from Left Pane -> fetch real polygons + VRI properties
   const handleSelectFomProject = useCallback(
     async (project: FomProjectSummary) => {
@@ -1380,6 +1593,46 @@ export default function ForestryMapExplorer() {
   },
   [runLiveInspect, syncUrlParams, updateMapHighlight]
   );
+
+  useEffect(() => {
+    handleSelectFomProjectRef.current = handleSelectFomProject;
+  }, [handleSelectFomProject]);
+
+  // Sync Open FOM Proposal Pins GeoJSON on the map
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapLoaded) return;
+    const src = map.getSource("fom-proposal-pins") as
+      | maplibregl.GeoJSONSource
+      | undefined;
+    if (!src) return;
+
+    if (!stageVisibility.fom_proposed) {
+      src.setData({ type: "FeatureCollection", features: [] });
+      return;
+    }
+
+    const features: GeoJSON.Feature<GeoJSON.Point>[] = filteredFomProjects
+      .filter((p) => isFomOpenForComment(p) && Array.isArray(p.center))
+      .map((p) => ({
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: p.center!,
+        },
+        properties: {
+          fomId: p.fomId,
+          name: p.name,
+          district: p.district,
+          rank: p.riskAssessment?.rank ?? 0,
+          riskLabel:
+            RISK_BADGE_STYLES[p.riskAssessment?.category || "unassessed"]
+              .shortLabel,
+        },
+      }));
+
+    src.setData({ type: "FeatureCollection", features });
+  }, [mapLoaded, filteredFomProjects, stageVisibility.fom_proposed]);
 
   // Apply shareable deep link (?fomId=... or ?lat=...&lng=...&z=...) once on load
   useEffect(() => {
@@ -1490,6 +1743,45 @@ export default function ForestryMapExplorer() {
     } catch {
       // Ignore clipboard errors
     }
+  };
+
+  const buildMinisterMailto = (): string => {
+    if (!inspectResult) return "mailto:FOR.Minister@gov.bc.ca";
+    const title =
+      selectedFomProject?.name ||
+      activeCutblock?.name ||
+      `BC Forest Location (${inspectResult.coordinates[1].toFixed(4)}, ${inspectResult.coordinates[0].toFixed(4)})`;
+    const subject = `Forestry Stewardship Inquiry: ${title}`;
+    const origin =
+      typeof window !== "undefined"
+        ? `${window.location.origin}${window.location.pathname}`
+        : "";
+    const shareUrl = selectedFomProject?.fomId
+      ? `${origin}?fomId=${selectedFomProject.fomId}`
+      : activeCutblock?.fomId
+      ? `${origin}?fomId=${activeCutblock.fomId}`
+      : `${origin}?lat=${inspectResult.coordinates[1].toFixed(4)}&lng=${inspectResult.coordinates[0].toFixed(4)}`;
+
+    const rawSummary = buildInspectSummary(
+      inspectResult,
+      activeCutblock,
+      selectedFomProject
+    );
+    const trimmedSummary =
+      rawSummary.length > 900 ? `${rawSummary.slice(0, 900)}...` : rawSummary;
+
+    const body = [
+      "Dear Minister of Forests,",
+      "",
+      "I am writing as a BC resident regarding the following forestry area:",
+      shareUrl,
+      "",
+      trimmedSummary,
+      "",
+      "[Add your comments or questions here]",
+    ].join("\n");
+
+    return `mailto:FOR.Minister@gov.bc.ca?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
 
   const handleDownloadEvidenceJson = () => {
@@ -1686,8 +1978,79 @@ export default function ForestryMapExplorer() {
           )}
         </div>
 
-        {/* Right: Region Jump, Basemap Switcher, Forest & Data Layers Popover */}
+        {/* Right: Place Search, Region Jump, Basemap Switcher, Forest & Data Layers Popover */}
         <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 sm:gap-2.5 w-full lg:w-auto">
+          <div
+            ref={placePopoverRef}
+            className="relative col-span-2 sm:col-span-1 w-full sm:w-48"
+          >
+            <Search className="w-3.5 h-3.5 text-stone-400 absolute left-2.5 top-2.5 pointer-events-none" />
+            <input
+              type="text"
+              value={placeQuery}
+              onFocus={() => {
+                if (placeResults.length > 0) setPlaceOpen(true);
+              }}
+              onChange={(e) => setPlaceQuery(e.target.value)}
+              placeholder="Find BC town or address..."
+              aria-label="Search BC town or address"
+              className="w-full min-h-[36px] bg-[#FAF8F4] text-stone-800 text-xs pl-8 pr-7 py-1.5 rounded-lg border border-stone-200 focus:outline-none focus:border-emerald-700"
+            />
+            {(placeQuery || nearLocation) && (
+              <button
+                type="button"
+                aria-label="Clear place search"
+                onClick={() => {
+                  setPlaceQuery("");
+                  setPlaceResults([]);
+                  setPlaceOpen(false);
+                  setNearLocation(null);
+                }}
+                className="absolute right-2 top-2 text-stone-400 hover:text-stone-700"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+            {placeOpen && (placeLoading || placeResults.length > 0) && (
+              <div className="absolute left-0 right-0 mt-1 bg-white border border-stone-200 shadow-xl rounded-xl py-1 z-50 max-h-60 overflow-y-auto">
+                {placeLoading ? (
+                  <div className="px-3 py-2 text-xs text-stone-500 flex items-center gap-2">
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                    <span>Searching BC locations...</span>
+                  </div>
+                ) : (
+                  placeResults.map((res, idx) => (
+                    <button
+                      key={`${res.label}-${idx}`}
+                      type="button"
+                      onClick={() => {
+                        setNearLocation({
+                          label: res.locality || res.label,
+                          lng: res.lng,
+                          lat: res.lat,
+                          radiusKm: nearLocation?.radiusKm ?? 50,
+                        });
+                        setPlaceQuery(res.locality || res.label);
+                        setPlaceOpen(false);
+                        mapRef.current?.flyTo({
+                          center: [res.lng, res.lat],
+                          zoom: 10.2,
+                          duration: 1100,
+                        });
+                      }}
+                      className="w-full text-left px-3 py-2 text-xs hover:bg-[#F8F5EE] flex items-start gap-2 transition-colors"
+                    >
+                      <MapPin className="w-3.5 h-3.5 text-[#143929] shrink-0 mt-0.5" />
+                      <span className="text-stone-800 leading-snug">
+                        {res.label}
+                      </span>
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+
           <select
             aria-label="Jump to BC region"
             value={selectedRegionId}
@@ -1701,7 +2064,7 @@ export default function ForestryMapExplorer() {
             ))}
           </select>
 
-          <div className="col-span-2 sm:col-span-1 grid grid-cols-3 sm:flex items-center gap-0.5 bg-[#FAF8F4] border border-stone-200 p-0.5 rounded-lg">
+          <div className="col-span-2 sm:col-span-1 grid grid-cols-2 sm:flex items-center gap-0.5 bg-[#FAF8F4] border border-stone-200 p-0.5 rounded-lg">
             {(Object.keys(BASEMAPS) as BasemapId[]).map((bmKey) => (
               <button
                 key={bmKey}
@@ -2271,6 +2634,47 @@ export default function ForestryMapExplorer() {
                 linkText="Rating rules →"
               />
             </div>
+            {nearLocation && (
+              <div className="flex items-center justify-between gap-2 bg-emerald-50/80 border border-emerald-200 rounded-lg px-2.5 py-1.5 text-[11px] text-emerald-950">
+                <div className="flex items-center gap-1 min-w-0">
+                  <MapPin className="w-3 h-3 text-emerald-700 shrink-0" />
+                  <span className="truncate font-medium">
+                    Near {nearLocation.label}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  {[25, 50, 100].map((r) => (
+                    <button
+                      key={r}
+                      type="button"
+                      onClick={() =>
+                        setNearLocation((prev) =>
+                          prev ? { ...prev, radiusKm: r } : prev
+                        )
+                      }
+                      className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+                        nearLocation.radiusKm === r
+                          ? "bg-[#143929] text-white"
+                          : "bg-white text-emerald-900 border border-emerald-200"
+                      }`}
+                    >
+                      {r}km
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setNearLocation(null);
+                      setPlaceQuery("");
+                    }}
+                    aria-label="Clear location filter"
+                    className="text-emerald-700 hover:text-emerald-950 ml-0.5"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              </div>
+            )}
             {fomSource && (
               <div className="flex items-center justify-between gap-2 text-[10px] text-stone-500">
                 <span>
@@ -2302,7 +2706,7 @@ export default function ForestryMapExplorer() {
                 </span>
                 <button
                   type="button"
-                  onClick={fetchFomProjects}
+                  onClick={() => fetchFomProjects(true)}
                   disabled={fomLoading}
                   title="Refresh proposals list"
                   aria-label="Refresh proposals list"
@@ -2330,7 +2734,7 @@ export default function ForestryMapExplorer() {
               <div className="p-4 text-xs text-stone-600 space-y-2">
                 <p>{fomError}</p>
                 <button
-                  onClick={fetchFomProjects}
+                  onClick={() => fetchFomProjects(true)}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#FAF8F4] border border-stone-300 text-stone-800 font-medium hover:bg-stone-100"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
@@ -2395,6 +2799,16 @@ export default function ForestryMapExplorer() {
                       {proj.district}
                       {proj.totalPlannedHa ? ` · ${proj.totalPlannedHa} ha` : ""}
                       {proj.blockCount ? ` · ${proj.blockCount} blocks` : ""}
+                      {nearLocation && proj.center
+                        ? ` · ${Math.round(
+                            haversineKm(
+                              nearLocation.lng,
+                              nearLocation.lat,
+                              proj.center[0],
+                              proj.center[1]
+                            )
+                          )} km away`
+                        : ""}
                     </div>
 
                     <div className="text-[11px] text-stone-700 mt-0.5 truncate">
@@ -2491,6 +2905,12 @@ export default function ForestryMapExplorer() {
                       </div>
                     ))}
                   </div>
+                  {stageVisibility.fom_proposed && (
+                    <div className="text-[10px] text-stone-500 pt-0.5">
+                      Pins &amp; clusters mark open proposals colored by
+                      sensitivity.
+                    </div>
+                  )}
                 </div>
 
                 {/* Active Map Layers */}
@@ -2874,12 +3294,23 @@ export default function ForestryMapExplorer() {
                       {inspectResult.designations.recentWildfire.fireNumber
                         ? ` · Fire #${inspectResult.designations.recentWildfire.fireNumber}`
                         : ""}
+                      {inspectResult.designations.recentWildfire.burnSeverity
+                        ? ` · ${inspectResult.designations.recentWildfire.burnSeverity} severity`
+                        : inspectResult.designations.recentWildfire.postDatesVri
+                        ? " · Severity unmapped"
+                        : ""}
                       )
                     </div>
                     <div className="text-[11px] text-orange-900/90 mt-0.5">
-                      {inspectResult.designations.recentWildfire.postDatesVri
-                        ? "This area burned after the last forest survey, so recorded tree ages may be from before the fire. Switch to Satellite view to check for post-fire salvage logging."
-                        : "Past wildfire mapped here prior to the current forest survey."}
+                      {!inspectResult.designations.recentWildfire.postDatesVri
+                        ? "Past wildfire mapped here prior to the current forest survey."
+                        : inspectResult.designations.recentWildfire.burnSeverity === "Low" ||
+                          inspectResult.designations.recentWildfire.burnSeverity === "Unburned"
+                        ? "Mapped as low-intensity or unburned surface fire—canopy trees often survive, so intact forest age is retained. Check Satellite view to confirm."
+                        : inspectResult.designations.recentWildfire.burnSeverity === "High" ||
+                          inspectResult.designations.recentWildfire.burnSeverity === "Medium"
+                        ? "Mapped as moderate-to-high burn severity after the last forest survey—canopy mortality is likely. Switch to Satellite view to check for post-fire salvage logging."
+                        : "This area burned after the last forest survey (burn severity unmapped), so recorded tree ages may pre-date the fire. Switch to Satellite view to check for post-fire salvage logging."}
                     </div>
                   </div>
                 </div>
@@ -2904,8 +3335,8 @@ export default function ForestryMapExplorer() {
                         <span>{risk.label}</span>
                         <InfoTooltip
                           label="About Sensitivity Rating"
-                          title="Old-Growth & Habitat Sensitivity"
-                          content="Rule-based rating combining tree age, growing productivity, parks, protected old growth, wildlife habitat, winter ranges, drinking-water watersheds, and wildfire checks. Lower sensitivity does not mean zero impact."
+                          title="Tier-1 Stand & Overlay Screening Index (Methods v2.1)"
+                          content="Rule-based screening index combining tree age, growing productivity, ecosystem rarity, parks, protected old growth, wildlife habitat, winter ranges, drinking-water watersheds, and burn-severity-checked wildfires. Lower sensitivity does not mean zero impact."
                           href="/forest-metrics#risk-methodology"
                           linkText="See full rating table →"
                         />
@@ -2918,7 +3349,7 @@ export default function ForestryMapExplorer() {
                           : risk.assessmentScope === "centroid_screening"
                           ? "Quick preview"
                           : "Unassessed"}{" "}
-                        · Methods {risk.methodologyVersion || "v2.0"}
+                        · Methods {risk.methodologyVersion || "v2.1"}
                       </span>
                     </div>
 
@@ -2941,10 +3372,10 @@ export default function ForestryMapExplorer() {
 
                     <div className="pt-1.5 text-[10px] leading-relaxed opacity-85 border-t border-black/10 space-y-0.5">
                       <div>
-                        <strong>Checked automatically:</strong> Tree age &amp; productivity, parks, legally protected old growth, 2021 deferral recommendations, wildlife habitat, winter ranges, drinking-water watersheds, and recent wildfires.
+                        <strong>Checked automatically:</strong> Tree age &amp; productivity, ecosystem rarity, parks, legally protected old growth, 2021 deferral recommendations, wildlife habitat, winter ranges, drinking-water watersheds, and burn-severity-checked wildfires.
                       </div>
                       <div>
-                        <strong>Not checked here:</strong> Fish-bearing streams, landslide risk, watershed clearcut totals, Indigenous cultural sites, and private forest land.{" "}
+                        <strong>Not checked here:</strong> Harvest method (clearcut vs. partial retention or fuel-mitigation thinning), fish-bearing streams, landslide risk, watershed clearcut totals (ECA), Indigenous cultural sites, and private forest land.{" "}
                         <Link
                           href="/forest-metrics#risk-methodology"
                           className="underline font-medium"
@@ -3103,6 +3534,17 @@ export default function ForestryMapExplorer() {
                         {inspectResult.forest.ecologicalNote}
                       </p>
                     )}
+
+                    {inspectResult.forest.landscapeRarityNote && (
+                      <p className="text-[11px] text-amber-950 bg-amber-50/70 border border-amber-200 rounded-lg px-2.5 py-2 leading-relaxed">
+                        <strong>
+                          {inspectResult.forest.landscapeRarityLabel ||
+                            "Landscape Rarity Context"}
+                          :
+                        </strong>{" "}
+                        {inspectResult.forest.landscapeRarityNote}
+                      </p>
+                    )}
                   </>
                 ) : (
                   <p className="text-xs text-stone-600 bg-[#FAF8F4] border border-stone-200/80 rounded-lg p-3 leading-relaxed">
@@ -3228,43 +3670,85 @@ export default function ForestryMapExplorer() {
               )}
 
             {inspectResult && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="space-y-2">
                 <button
-                  onClick={handleCopySummary}
-                  className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[#FAF8F4] hover:bg-stone-100 text-stone-800 border border-stone-300 text-xs font-medium transition-colors"
+                  type="button"
+                  onClick={() => setDraftModalOpen(true)}
+                  className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[#F2EDE2] hover:bg-[#E7E0D0] text-[#11241C] border border-[#D4CCB8] text-xs font-semibold transition-colors"
                 >
-                  {copiedSummary ? (
-                    <>
-                      <Check className="w-3.5 h-3.5 text-emerald-700" />
-                      <span className="text-emerald-800 font-semibold">
-                        Copied
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3.5 h-3.5 text-stone-600" />
-                      <span>Copy Summary</span>
-                    </>
-                  )}
+                  <PenLine className="w-3.5 h-3.5 text-[#143929]" />
+                  <span>Draft Comment / MLA Letter</span>
                 </button>
-                <button
-                  onClick={handleCopyShareLink}
-                  className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[#FAF8F4] hover:bg-stone-100 text-stone-800 border border-stone-300 text-xs font-medium transition-colors"
-                >
-                  {copiedShareLink ? (
-                    <>
-                      <Check className="w-3.5 h-3.5 text-emerald-700" />
-                      <span className="text-emerald-800 font-semibold">
-                        Link Copied
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <Link2 className="w-3.5 h-3.5 text-stone-600" />
-                      <span>Copy Share Link</span>
-                    </>
-                  )}
-                </button>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <button
+                    onClick={handleCopySummary}
+                    className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[#FAF8F4] hover:bg-stone-100 text-stone-800 border border-stone-300 text-xs font-medium transition-colors"
+                  >
+                    {copiedSummary ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-700" />
+                        <span className="text-emerald-800 font-semibold">
+                          Copied
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5 text-stone-600" />
+                        <span>Copy Summary</span>
+                      </>
+                    )}
+                  </button>
+                  <button
+                    onClick={handleCopyShareLink}
+                    className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-[#FAF8F4] hover:bg-stone-100 text-stone-800 border border-stone-300 text-xs font-medium transition-colors"
+                  >
+                    {copiedShareLink ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-700" />
+                        <span className="text-emerald-800 font-semibold">
+                          Link Copied
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <Link2 className="w-3.5 h-3.5 text-stone-600" />
+                        <span>Copy Share Link</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {inspectResult && (
+              <div className="bg-[#F8F5EE] border border-[#E5DFD2] rounded-lg p-2.5 space-y-1.5">
+                <div className="text-[10px] font-semibold uppercase tracking-wider text-stone-500">
+                  Raise This Beyond Consultation
+                </div>
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px]">
+                  <a
+                    href={buildMinisterMailto()}
+                    className="inline-flex items-center gap-1 text-[#143929] hover:underline font-medium"
+                  >
+                    <Mail className="w-3 h-3" />
+                    <span>Email Minister of Forests</span>
+                  </a>
+                  <a
+                    href="https://www.leg.bc.ca/members"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-[#143929] hover:underline font-medium"
+                  >
+                    <span>Find Your MLA</span>
+                    <ExternalLink className="w-2.5 h-2.5" />
+                  </a>
+                  <Link
+                    href="/about#take-action"
+                    className="text-stone-600 hover:text-[#143929] hover:underline font-medium"
+                  >
+                    More ways to act &rarr;
+                  </Link>
+                </div>
               </div>
             )}
 
@@ -3279,6 +3763,27 @@ export default function ForestryMapExplorer() {
           </div>
         </aside>
       </div>
+      {inspectResult && (
+        <CommentDraftModal
+          open={draftModalOpen}
+          onClose={() => setDraftModalOpen(false)}
+          inspectResult={inspectResult}
+          activeCutblock={activeCutblock}
+          selectedFomProject={selectedFomProject}
+          shareUrl={
+            typeof window !== "undefined"
+              ? (() => {
+                  const base = `${window.location.origin}${window.location.pathname}`;
+                  const fomId =
+                    selectedFomProject?.fomId || activeCutblock?.fomId;
+                  return fomId
+                    ? `${base}?fomId=${fomId}`
+                    : `${base}?lat=${inspectResult.coordinates[1].toFixed(4)}&lng=${inspectResult.coordinates[0].toFixed(4)}`;
+                })()
+              : ""
+          }
+        />
+      )}
     </div>
   );
 }

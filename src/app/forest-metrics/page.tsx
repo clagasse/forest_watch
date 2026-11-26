@@ -7,7 +7,7 @@ import { ArrowLeft, ExternalLink } from "lucide-react";
 export const metadata: Metadata = {
   title: "Old Growth & Forest Metrics",
   description:
-    "How BC old growth is defined by ecosystem, how soil productivity and tree height work, and the transparent sensitivity methodology (v2.0).",
+    "How BC old growth is defined by ecosystem, how soil productivity and tree height work, and the Tier-1 screening methodology (v2.1) with scientific citations.",
 };
 
 const OFFICIAL_REFERENCES = [
@@ -346,24 +346,26 @@ export default function ForestMetricsPage() {
           </p>
         </section>
 
-        {/* 4. Old-Growth & Habitat Sensitivity Categories (Methods v2.0) */}
+        {/* 4. Tier-1 Stand & Overlay Screening Index (Methods v2.1) */}
         <section
           id="risk-methodology"
           className="bg-white border border-[#DDD7C9] rounded-xl p-6 space-y-4 shadow-[0_1px_3px_rgba(16,42,32,0.04)] scroll-mt-20"
         >
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className="font-serif text-lg font-semibold text-[#11241C]">
-              4. Old-Growth &amp; Habitat Sensitivity Ratings (Methods v2.0)
+              4. Tier-1 Stand &amp; Overlay Screening Index (Methods v2.1)
             </h2>
             <span className="text-[11px] font-mono bg-[#F2EDE2] border border-[#DDD7C9] px-2 py-0.5 rounded text-stone-700">
-              v2.0
+              v2.1
             </span>
           </div>
           <p className="text-sm text-stone-700 leading-relaxed">
-            To help the public decide which logging proposals to review first,
-            BC Forestry Watch assigns each proposal a transparent, rule-based{" "}
-            <strong>Old-Growth &amp; Habitat Sensitivity</strong> rating using
-            exact point-in-polygon checks against official provincial maps:
+            To help the public prioritize which logging proposals to review
+            first, BC Forestry Watch assigns each proposal a transparent{" "}
+            <strong>Tier-1 Stand &amp; Overlay Screening Index</strong> using
+            exact point-in-polygon checks against official provincial maps. It
+            is designed for <em>public triage</em>—not as a full landscape
+            cumulative-effects assessment.
           </p>
 
           <div className="overflow-x-auto">
@@ -387,12 +389,14 @@ export default function ForestMetricsPage() {
                     <strong>BC Park</strong>,{" "}
                     <strong>Protected Wildlife Habitat</strong>, or{" "}
                     <strong>2021 Recommended Old-Growth Deferral</strong>{" "}
-                    (unless burned in a later wildfire); targets{" "}
+                    (unless burned at moderate/high severity in a later
+                    wildfire); targets{" "}
                     <strong>fertile, high-productivity old growth</strong> (Site
-                    Index &ge; 20 m, or unusually high for its ecosystem); or
+                    Index &ge; 20 m, or unusually high for its ecosystem);
                     targets <strong>ancient forest</strong> (&ge; 400 yrs
-                    coastal/wet-belt or &ge; 250 yrs interior, not burned
-                    since).
+                    coastal/wet-belt or &ge; 250 yrs interior); or targets old
+                    growth in a <strong>critically rare ecosystem</strong>{" "}
+                    (Coastal Douglas-fir, &lt;1% historic old growth remaining).
                   </td>
                 </tr>
                 <tr>
@@ -403,10 +407,14 @@ export default function ForestMetricsPage() {
                     Overlaps a{" "}
                     <strong>Protected Winter Wildlife Range</strong> or{" "}
                     <strong>Community Drinking-Water Watershed</strong>; targets{" "}
+                    <strong>old growth in heavily depleted low-elevation subzones</strong>{" "}
+                    (<code>CWHxm</code>, <code>CWHdm</code>, <code>ICHxw</code>,{" "}
+                    <code>IDFxh</code>, <code>PPxh</code>) or mature forest in
+                    critically rare <code>CDF</code>; targets{" "}
                     <strong>moderate-productivity old growth</strong> (Site
-                    Index 12–20 m), <strong>tall old growth</strong> (35 m or
-                    taller), or fast-growing wet-belt stands approaching
-                    old-growth age (&ge; 120 yrs, Site Index &ge; 25 m).
+                    Index 12–20 m), <strong>tall old growth</strong> (&ge; 35 m),
+                    or fast-growing wet-belt stands approaching old-growth age
+                    (&ge; 120 yrs, Site Index &ge; 25 m).
                   </td>
                 </tr>
                 <tr>
@@ -416,8 +424,9 @@ export default function ForestMetricsPage() {
                   <td className="py-2.5 px-3 leading-relaxed">
                     Targets <strong>slow-growing old growth</strong> (Site Index
                     &lt; 12 m), <strong>mature forest</strong> (81+ yrs), or an
-                    older forest with a <strong>recent wildfire overlap</strong>{" "}
-                    that may be post-fire salvage logging.
+                    older forest with a{" "}
+                    <strong>stand-replacing wildfire overlap</strong> that may
+                    be post-fire salvage logging.
                   </td>
                 </tr>
                 <tr>
@@ -444,36 +453,108 @@ export default function ForestMetricsPage() {
             </table>
           </div>
 
+          {/* Published Standards vs. Custom Screening Heuristics */}
+          <div className="border border-[#E5DFD2] rounded-lg overflow-hidden">
+            <div className="bg-[#F4F0E6] px-3.5 py-2 text-[11px] font-semibold uppercase tracking-wider text-stone-700 border-b border-[#E5DFD2]">
+              Published Thresholds vs. Tier-1 Triage Heuristics
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#E5DFD2] text-xs">
+              <div className="p-3.5 space-y-1.5">
+                <div className="font-semibold text-[#143929]">
+                  Published BC &amp; Peer-Reviewed Thresholds
+                </div>
+                <ul className="list-disc pl-4 space-y-1 text-stone-600 leading-relaxed">
+                  <li>
+                    <strong>140 / 250 yr old-growth cutoffs:</strong> BC{" "}
+                    <em>Biodiversity Guidebook</em> (1995) Natural Disturbance
+                    Types.
+                  </li>
+                  <li>
+                    <strong>250 / 400 yr ancient cutoffs &amp; &lt;10% remnant:</strong>{" "}
+                    BC Old Growth TAP (2021).
+                  </li>
+                  <li>
+                    <strong>Site Index &ge; 20 m &amp; &lt;30% risk benchmark:</strong>{" "}
+                    Price, Holt &amp; Daust (2020, 2021); Price, Roburn &amp;
+                    MacKinnon (2009).
+                  </li>
+                  <li>
+                    <strong>Statutory overlays &amp; burn severity:</strong>{" "}
+                    OGMAs, BC Parks, WHAs, UWRs, Community Watersheds, and{" "}
+                    <code>VEG_BURN_SEVERITY_SP</code>.
+                  </li>
+                </ul>
+              </div>
+              <div className="p-3.5 space-y-1.5">
+                <div className="font-semibold text-stone-800">
+                  Custom Tier-1 Screening Heuristics
+                </div>
+                <ul className="list-disc pl-4 space-y-1 text-stone-600 leading-relaxed">
+                  <li>
+                    <strong>BEC-relative SI (14–16 m):</strong> Flags upper-end
+                    productivity in drier or northern zones where SI &ge; 20 m
+                    is rare.
+                  </li>
+                  <li>
+                    <strong>SI 12–20 m &amp; Height &ge; 35 m:</strong>{" "}
+                    Mid-productivity old growth and tall-canopy offset for
+                    broken-top VRI bias.
+                  </li>
+                  <li>
+                    <strong>Wet-belt mature (&ge; 120 yrs, SI &ge; 25 m):</strong>{" "}
+                    Recruitment stands approaching old-growth status.
+                  </li>
+                  <li>
+                    <strong>Mature cutoff (&ge; 81 yrs):</strong> Separates
+                    maturing stands from younger second growth (&le; 80 yrs).
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
           <div className="bg-[#F6F3EB] border border-[#E4DEC9] border-l-[3px] border-l-[#1D523B] rounded-lg p-4 space-y-2">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-stone-700">
               Key Assumptions &amp; Limitations
             </h3>
             <ul className="list-disc pl-5 space-y-1.5 text-xs text-stone-600 leading-relaxed">
               <li>
-                <strong>What Is Checked vs. Not Checked:</strong> Automated
-                checks cover tree age and productivity, ecosystem type, parks,
-                legally protected old growth, 2021 deferral recommendations,
-                wildlife habitat, winter ranges, community drinking-water
-                watersheds, and recent wildfires. They do <em>not</em> evaluate
-                fish-bearing stream buffers, landslide risk, watershed clearcut
-                totals (<em>Equivalent Clearcut Area</em>), Indigenous cultural
-                sites, or private forest land. <em>Lower Sensitivity</em> does
-                not mean zero environmental impact.
+                <strong>VRI Site Index Underestimation:</strong> Photo-interpreted
+                VRI Site Index systematically underestimates true soil fertility
+                in ancient, multi-layered, or broken-top stands compared to
+                BC&apos;s Provincial Site Productivity Layer (TAP, 2021; Price
+                et al., 2022).
               </li>
               <li>
-                <strong>Wildfire &amp; Incomplete-Data Safeguards:</strong> If a
-                recent wildfire burned after the forest survey year, intact
-                old-growth triggers are qualified so post-fire salvage is not
-                presented as intact ancient forest. If any government map layer
-                times out, an <em>Incomplete Check</em> banner lists the exact
-                unavailable layers.
+                <strong>Harvest Method Not Distinguished:</strong> FOM
+                boundaries do not consistently distinguish clearcutting from
+                partial-retention silviculture or wildfire fuel-mitigation
+                thinning.
               </li>
               <li>
-                <strong>Multi-Block Sampling:</strong> Selecting a proposal
-                checks up to 5 representative cutblock interior points and
-                displays the highest-sensitivity block alongside the range of
-                tree ages found. Click any individual cutblock on the map for an
-                exact stand-level check.
+                <strong>What Is Not Checked:</strong> Automated checks do{" "}
+                <em>not</em> evaluate fish-bearing stream buffers, landslide
+                risk, watershed cumulative clearcut totals (
+                <em>Equivalent Clearcut Area</em> under BC&apos;s Aquatic
+                Ecosystems Protocol), Indigenous cultural sites, or private
+                forest land. <em>Lower Sensitivity</em> does not mean zero
+                environmental impact.
+              </li>
+              <li>
+                <strong>Burn-Severity-Aware Wildfire Guard:</strong> When a
+                wildfire post-dates the forest survey, the Explorer checks{" "}
+                <code>VEG_BURN_SEVERITY_SP</code>. Only{" "}
+                <em>Medium/High</em> severity fires (or unmapped fires outside
+                fire-maintained <code>NDT4</code> ecosystems) qualify intact
+                old-growth triggers as burned; <em>Low</em>-severity surface
+                fires retain intact forest age.
+              </li>
+              <li>
+                <strong>Multi-Block Point Sampling:</strong> Selecting a
+                proposal checks up to 5 representative cutblock interior points
+                and reports the highest-sensitivity block. Edge overlaps on
+                unsampled corners require clicking individual blocks or reviewing
+                official FOM maps.
               </li>
             </ul>
           </div>
@@ -531,6 +612,90 @@ export default function ForestMetricsPage() {
               </li>
             ))}
           </ul>
+
+          <div className="border-t border-stone-200 pt-4 space-y-2.5">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-stone-600">
+              Peer-Reviewed Scientific Literature &amp; Classification Frameworks
+            </h3>
+            <ul className="space-y-2 text-xs text-stone-600 leading-relaxed">
+              <li>
+                <strong>BC Biodiversity Guidebook (1995):</strong> BC Ministry
+                of Forests &amp; BC Ministry of Environment, Lands and Parks.{" "}
+                <em>Biodiversity Guidebook</em> (Forest Practices Code of BC).
+                Defines Natural Disturbance Types (NDT1–NDT5) and 140/250-year
+                old-seral age thresholds.
+              </li>
+              <li>
+                <strong>Ecosystem-Based Management Risk Thresholds (2009):</strong>{" "}
+                Price, K., Roburn, A., &amp; MacKinnon, A. (2009).
+                Ecosystem-based management in the Great Bear Rainforest.{" "}
+                <em>Forest Ecology and Management</em>, 258(4), 495–503.
+                Establishes &lt;30% high-risk and 30–70% moderate-risk habitat
+                retention benchmarks, grounded in landscape habitat-threshold
+                theory (Andrén, 1994, <em>Oikos</em> 71:355–366; Fahrig, 2003,{" "}
+                <em>Annu. Rev. Ecol. Evol. Syst.</em> 34:487–515).
+              </li>
+              <li>
+                <strong>Productivity-Stratified Old Growth (2020, 2021):</strong>{" "}
+                Price, K., Holt, R. F., &amp; Daust, D. (2020){" "}
+                <em>BC&apos;s Old Growth Forest: A Last Stand for Biodiversity</em>
+                ; and Price, K., Holt, R. F., &amp; Daust, D. (2021).
+                Conflicting portrayals of remaining old growth: the British
+                Columbia case. <em>Canadian Journal of Forest Research</em>,
+                51(5), 742–752.{" "}
+                <a
+                  href="https://doi.org/10.1139/cjfr-2020-0453"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-emerald-800 hover:underline font-mono"
+                >
+                  doi:10.1139/cjfr-2020-0453
+                </a>
+              </li>
+              <li>
+                <strong>Big-Treed Indicators &amp; VRI SI Bias (2022):</strong>{" "}
+                Price, K., Holt, R. F., &amp; Daust, K. (2022). Estimating the
+                amount of British Columbia&apos;s &ldquo;big-treed&rdquo; old
+                growth: Navigating messy indicators.{" "}
+                <em>Frontiers in Forests and Global Change</em>, 5, 958719.{" "}
+                <a
+                  href="https://doi.org/10.3389/ffgc.2022.958719"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-emerald-800 hover:underline font-mono"
+                >
+                  doi:10.3389/ffgc.2022.958719
+                </a>
+              </li>
+              <li>
+                <strong>BC Cumulative Effects Framework (CEF):</strong>{" "}
+                Government of British Columbia.{" "}
+                <em>
+                  Interim Assessment Protocol for Old Growth Forest in British
+                  Columbia
+                </em>{" "}
+                (v1.1) and{" "}
+                <em>Interim Assessment Protocol for Aquatic Ecosystems</em>{" "}
+                (Equivalent Clearcut Area &amp; Low/Moderate/High watershed
+                hazard ratings).
+              </li>
+              <li>
+                <strong>Structural Complexity &amp; Multi-Aged Stands:</strong>{" "}
+                Franklin, J. F., Spies, T. A., et al. (2002),{" "}
+                <em>Forest Ecology and Management</em> 155:399–423; and Spies,
+                T. A. (2004). Ecological concepts and diversity of old-growth
+                forests. <em>Journal of Forestry</em>, 102(3), 14–20.{" "}
+                <a
+                  href="https://doi.org/10.1093/jof/102.3.14"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-emerald-800 hover:underline font-mono"
+                >
+                  doi:10.1093/jof/102.3.14
+                </a>
+              </li>
+            </ul>
+          </div>
         </section>
 
         <div className="pt-2">
