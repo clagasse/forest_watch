@@ -1,70 +1,12 @@
 {
   "schemaVersion": 1,
-<<<<<<< HEAD
   "methodologyVersion": "v2.1",
-  "generatedAt": "2026-11-26T02:28:56.233Z",
-=======
-  "methodologyVersion": "v2.0",
-  "generatedAt": "2026-11-26T01:38:09.674Z",
->>>>>>> 1d45330f9f42fcc4b4d35e742c15d5c41380c9d8
+  "generatedAt": "2026-11-26T16:29:18.882Z",
   "source": "fom_api",
-  "totalProjects": 2296,
-  "openProjectsCount": 67,
-  "assessedProjectsCount": 65,
+  "totalProjects": 2303,
+  "openProjectsCount": 73,
+  "assessedProjectsCount": 70,
   "projects": [
-    {
-      "fomId": "3540",
-      "name": "Canfor Kootenay Division October 27th FOM",
-      "fspHolder": "CANADIAN FOREST PRODUCTS LTD.",
-      "district": "Kootenay–Boundary Region",
-      "regionId": "kootenay-boundary",
-      "workflowState": "Commenting Open",
-      "commentOpenDate": "2026-10-27",
-      "commentCloseDate": "2026-11-26",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3540",
-      "center": [
-        -115.61752294196272,
-        50.45621941322219
-      ],
-      "blockCount": 106,
-      "totalPlannedHa": 4986.1,
-      "riskAssessment": {
-        "category": "very_high",
-        "label": "Very High Sensitivity",
-        "rank": 4,
-        "reasons": [
-          "Overlaps a 2024 wildfire area (Fire #N21610) mapped as Low severity — canopy trees frequently survive low-intensity surface fires, so intact forest age is retained.",
-          "Targets fertile, high-productivity old growth (183 yrs old in Montane Spruce; growing productivity 16.1 m, unusually high for this ecosystem (≥16 m))."
-        ],
-        "assessmentScope": "multi_block_screening",
-        "methodologyVersion": "v2.1",
-        "isPartialAssessment": false,
-        "wildfireQualified": false
-      },
-      "projectScreening": {
-        "totalBlocks": 106,
-        "sampledBlocks": 5,
-        "highestRiskCategory": "very_high",
-        "categoryCounts": {
-          "very_high": 1,
-          "high": 1,
-          "moderate": 1,
-          "low": 1,
-          "unassessed": 1
-        },
-        "minStandAge": 74,
-        "maxStandAge": 183,
-        "maxSiteIndex": 20.4,
-        "anyWildfireOverlap": true,
-        "anyDesignationOverlap": true
-      },
-      "forestPreview": {
-        "standAgeYears": 183,
-        "siteIndexMeters": 16.1,
-        "canopyHeightMeters": 29.6,
-        "becZone": "MSdk"
-      }
-    },
     {
       "fomId": "3505",
       "name": "West Fraser Mills",
@@ -1427,69 +1369,64 @@
       }
     },
     {
-<<<<<<< HEAD
-      "fomId": "3541",
-      "name": "GF A18969 CP 549 Williamson - MP",
-      "fspHolder": "INTERFOR CORPORATION",
-      "district": "Kootenay–Boundary Region",
-      "regionId": "kootenay-boundary",
-=======
-      "fomId": "3626",
-      "name": "West Fraser Mills Ltd.",
-      "fspHolder": "WEST FRASER MILLS LTD.",
-      "district": "Omineca Region",
-      "regionId": "omineca",
+      "fomId": "3632",
+      "name": "Skul'qalt Forestry Proposed Developments",
+      "fspHolder": "SKULQALT FORESTRY LIMITED PARTNERSHIP",
+      "district": "Thompson–Okanagan Region",
+      "regionId": "thompson-okanagan",
       "workflowState": "Commenting Open",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3626",
+      "commentOpenDate": "2026-11-26",
+      "commentCloseDate": "2026-12-26",
+      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3632",
       "center": [
-        -125.4598612043065,
-        55.031523964667834
+        -119.9913370546431,
+        49.34528000399045
       ],
       "blockCount": 18,
-      "totalPlannedHa": 351.9,
+      "totalPlannedHa": 384.4,
       "riskAssessment": {
-        "category": "high",
-        "label": "High Sensitivity",
-        "rank": 3,
+        "category": "very_high",
+        "label": "Very High Sensitivity",
+        "rank": 4,
         "reasons": [
-          "Overlaps a legally protected winter wildlife range (M-ALAM · UWR u-7-018)."
+          "Overlaps an area recommended for temporary old-growth deferral by BC's 2021 scientific panel (Ancient Forest, Priority Big-Treed Old Growth).",
+          "Targets an ancient forest stand (289 yrs old in Montane Spruce)."
         ],
         "assessmentScope": "multi_block_screening",
-        "methodologyVersion": "v2.0",
+        "methodologyVersion": "v2.1",
         "isPartialAssessment": false,
         "wildfireQualified": false
       },
       "projectScreening": {
         "totalBlocks": 18,
         "sampledBlocks": 5,
-        "highestRiskCategory": "high",
+        "highestRiskCategory": "very_high",
         "categoryCounts": {
-          "very_high": 0,
-          "high": 3,
+          "very_high": 3,
+          "high": 1,
           "moderate": 1,
           "low": 0,
-          "unassessed": 1
+          "unassessed": 0
         },
-        "minStandAge": 101,
-        "maxStandAge": 133,
-        "maxSiteIndex": 21.5,
+        "minStandAge": 90,
+        "maxStandAge": 289,
+        "maxSiteIndex": 14.6,
         "anyWildfireOverlap": false,
         "anyDesignationOverlap": true
       },
       "forestPreview": {
-        "standAgeYears": 111,
-        "siteIndexMeters": 17.6,
-        "canopyHeightMeters": 27.8,
-        "becZone": "SBSwk3"
+        "standAgeYears": 289,
+        "siteIndexMeters": 12.8,
+        "canopyHeightMeters": 28.5,
+        "becZone": "MSxk1"
       }
     },
     {
-      "fomId": "3628",
-      "name": "WF FOM DMH Nov 2026",
-      "fspHolder": "WEST FRASER MILLS LTD.",
-      "district": "Cariboo Region",
-      "regionId": "cariboo",
->>>>>>> 1d45330f9f42fcc4b4d35e742c15d5c41380c9d8
+      "fomId": "3541",
+      "name": "GF A18969 CP 549 Williamson - MP",
+      "fspHolder": "INTERFOR CORPORATION",
+      "district": "Kootenay–Boundary Region",
+      "regionId": "kootenay-boundary",
       "workflowState": "Commenting Open",
       "commentOpenDate": "2026-10-28",
       "commentCloseDate": "2026-11-27",
@@ -1641,57 +1578,6 @@
       }
     },
     {
-<<<<<<< HEAD
-=======
-      "fomId": "3622",
-      "name": "EE6907-FOM2",
-      "fspHolder": "TOLKO INDUSTRIES LTD.",
-      "district": "Cariboo Region",
-      "regionId": "cariboo",
-      "workflowState": "Commenting Open",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3622",
-      "center": [
-        -122.43438956,
-        52.660646654
-      ],
-      "riskAssessment": {
-        "category": "high",
-        "label": "High Sensitivity",
-        "rank": 3,
-        "reasons": [
-          "Overlaps a legally protected winter wildlife range (M-ODHE · UWR u-5-001)."
-        ],
-        "assessmentScope": "centroid_screening",
-        "methodologyVersion": "v2.0",
-        "isPartialAssessment": false,
-        "wildfireQualified": false
-      },
-      "projectScreening": {
-        "totalBlocks": 1,
-        "sampledBlocks": 1,
-        "highestRiskCategory": "high",
-        "categoryCounts": {
-          "very_high": 0,
-          "high": 1,
-          "moderate": 0,
-          "low": 0,
-          "unassessed": 0
-        },
-        "minStandAge": 112,
-        "maxStandAge": 112,
-        "maxSiteIndex": 13.9,
-        "anyWildfireOverlap": false,
-        "anyDesignationOverlap": true
-      },
-      "forestPreview": {
-        "standAgeYears": 112,
-        "siteIndexMeters": 13.9,
-        "canopyHeightMeters": 21.3,
-        "becZone": "SBSdw2"
-      }
-    },
-    {
->>>>>>> 1d45330f9f42fcc4b4d35e742c15d5c41380c9d8
       "fomId": "3570",
       "name": "Fire Salvage Oct 2026",
       "fspHolder": "WEST FRASER MILLS LTD.",
@@ -2262,557 +2148,6 @@
       }
     },
     {
-<<<<<<< HEAD
-=======
-      "fomId": "3643",
-      "name": "2026CHM2",
-      "fspHolder": "KCFN FORESTRY VENTURES LIMITED PARTNERSHIP",
-      "district": "West Coast Region",
-      "regionId": "west-coast",
-      "workflowState": "Commenting Open",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3643",
-      "center": [
-        -127.26398130729544,
-        50.21085476588295
-      ],
-      "blockCount": 24,
-      "totalPlannedHa": 132.5,
-      "riskAssessment": {
-        "category": "moderate",
-        "label": "Moderate Sensitivity",
-        "rank": 2,
-        "reasons": [
-          "Targets a mature forest (248 yrs old)."
-        ],
-        "assessmentScope": "multi_block_screening",
-        "methodologyVersion": "v2.0",
-        "isPartialAssessment": false,
-        "wildfireQualified": false
-      },
-      "projectScreening": {
-        "totalBlocks": 24,
-        "sampledBlocks": 5,
-        "highestRiskCategory": "moderate",
-        "categoryCounts": {
-          "very_high": 0,
-          "high": 0,
-          "moderate": 1,
-          "low": 4,
-          "unassessed": 0
-        },
-        "minStandAge": 56,
-        "maxStandAge": 248,
-        "maxSiteIndex": 28.9,
-        "anyWildfireOverlap": false,
-        "anyDesignationOverlap": false
-      },
-      "forestPreview": {
-        "standAgeYears": 248,
-        "siteIndexMeters": 13.6,
-        "canopyHeightMeters": 32.4,
-        "becZone": "CWHvm1"
-      }
-    },
-    {
-      "fomId": "3621",
-      "name": "CISAA Forestry LLP",
-      "fspHolder": "CISAA FORESTRY LLP",
-      "district": "West Coast Region",
-      "regionId": "west-coast",
-      "workflowState": "Commenting Open",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3621",
-      "center": [
-        -124.75207232178869,
-        49.10025174884139
-      ],
-      "blockCount": 22,
-      "totalPlannedHa": 37.4,
-      "riskAssessment": {
-        "category": "moderate",
-        "label": "Moderate Sensitivity",
-        "rank": 2,
-        "reasons": [
-          "Overlaps a 2025 wildfire area (Fire #V71498) that burned after the 2025 forest survey — the recorded tree age (76 yrs) may be from before the fire. Check Satellite view to see if this is post-fire salvage logging."
-        ],
-        "assessmentScope": "multi_block_screening",
-        "methodologyVersion": "v2.0",
-        "isPartialAssessment": false,
-        "wildfireQualified": true
-      },
-      "projectScreening": {
-        "totalBlocks": 22,
-        "sampledBlocks": 5,
-        "highestRiskCategory": "moderate",
-        "categoryCounts": {
-          "very_high": 0,
-          "high": 0,
-          "moderate": 5,
-          "low": 0,
-          "unassessed": 0
-        },
-        "minStandAge": 14,
-        "maxStandAge": 76,
-        "maxSiteIndex": 33,
-        "anyWildfireOverlap": true,
-        "anyDesignationOverlap": false
-      },
-      "forestPreview": {
-        "standAgeYears": 76,
-        "siteIndexMeters": 25.2,
-        "canopyHeightMeters": 29.7,
-        "becZone": "CWHxm2"
-      }
-    },
-    {
-      "fomId": "3579",
-      "name": "Granisle Babine Lake Community Forest Oct 2026 FOM",
-      "fspHolder": "GRANISLE BABINE LAKE COMMUNITY FOREST MANAGEMENT CORP.",
-      "district": "Skeena Region",
-      "regionId": "skeena",
-      "workflowState": "Commenting Open",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3579",
-      "center": [
-        -126.35130612213267,
-        54.929084061316736
-      ],
-      "blockCount": 1,
-      "totalPlannedHa": 45.7,
-      "riskAssessment": {
-        "category": "moderate",
-        "label": "Moderate Sensitivity",
-        "rank": 2,
-        "reasons": [
-          "Targets slow-growing old growth (197 yrs old; growing productivity 11.3 m)."
-        ],
-        "assessmentScope": "centroid_screening",
-        "methodologyVersion": "v2.0",
-        "isPartialAssessment": false,
-        "wildfireQualified": false
-      },
-      "projectScreening": {
-        "totalBlocks": 1,
-        "sampledBlocks": 1,
-        "highestRiskCategory": "moderate",
-        "categoryCounts": {
-          "very_high": 0,
-          "high": 0,
-          "moderate": 1,
-          "low": 0,
-          "unassessed": 0
-        },
-        "minStandAge": 197,
-        "maxStandAge": 197,
-        "maxSiteIndex": 11.3,
-        "anyWildfireOverlap": false,
-        "anyDesignationOverlap": false
-      },
-      "forestPreview": {
-        "standAgeYears": 197,
-        "siteIndexMeters": 11.3,
-        "canopyHeightMeters": 26.7,
-        "becZone": "SBSmc2"
-      }
-    },
-    {
-      "fomId": "3564",
-      "name": "2026_Q4_TKO_KLFT_TA2370_SprouleCr",
-      "fspHolder": "TIMBER SALES MANAGER KOOTENAY",
-      "district": "Kootenay–Boundary Region",
-      "regionId": "kootenay-boundary",
-      "workflowState": "Commenting Open",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3564",
-      "center": [
-        -117.4766158550886,
-        49.55297370347382
-      ],
-      "blockCount": 3,
-      "totalPlannedHa": 71.4,
-      "riskAssessment": {
-        "category": "moderate",
-        "label": "Moderate Sensitivity",
-        "rank": 2,
-        "reasons": [
-          "Targets a mature forest (89 yrs old)."
-        ],
-        "assessmentScope": "multi_block_screening",
-        "methodologyVersion": "v2.0",
-        "isPartialAssessment": false,
-        "wildfireQualified": false
-      },
-      "projectScreening": {
-        "totalBlocks": 3,
-        "sampledBlocks": 3,
-        "highestRiskCategory": "moderate",
-        "categoryCounts": {
-          "very_high": 0,
-          "high": 0,
-          "moderate": 2,
-          "low": 1,
-          "unassessed": 0
-        },
-        "minStandAge": 69,
-        "maxStandAge": 89,
-        "maxSiteIndex": 21.7,
-        "anyWildfireOverlap": false,
-        "anyDesignationOverlap": false
-      },
-      "forestPreview": {
-        "standAgeYears": 89,
-        "siteIndexMeters": 21.7,
-        "canopyHeightMeters": 29.4,
-        "becZone": "ICHmw4"
-      }
-    },
-    {
-      "fomId": "3602",
-      "name": "2026-01",
-      "fspHolder": "ESK'ETEMC",
-      "district": "Cariboo Region",
-      "regionId": "cariboo",
-      "workflowState": "Commenting Open",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3602",
-      "center": [
-        -121.87859027435749,
-        51.95028701857627
-      ],
-      "blockCount": 1,
-      "totalPlannedHa": 4196.9,
-      "riskAssessment": {
-        "category": "moderate",
-        "label": "Moderate Sensitivity",
-        "rank": 2,
-        "reasons": [
-          "Targets a mature forest (115 yrs old)."
-        ],
-        "assessmentScope": "centroid_screening",
-        "methodologyVersion": "v2.0",
-        "isPartialAssessment": false,
-        "wildfireQualified": false
-      },
-      "projectScreening": {
-        "totalBlocks": 1,
-        "sampledBlocks": 1,
-        "highestRiskCategory": "moderate",
-        "categoryCounts": {
-          "very_high": 0,
-          "high": 0,
-          "moderate": 1,
-          "low": 0,
-          "unassessed": 0
-        },
-        "minStandAge": 115,
-        "maxStandAge": 115,
-        "maxSiteIndex": 11.3,
-        "anyWildfireOverlap": false,
-        "anyDesignationOverlap": false
-      },
-      "forestPreview": {
-        "standAgeYears": 115,
-        "siteIndexMeters": 11.3,
-        "canopyHeightMeters": 17.5,
-        "becZone": "IDFdk3"
-      }
-    },
-    {
-      "fomId": "3623",
-      "name": "Adams 2026-09",
-      "fspHolder": "INTERFOR CORPORATION",
-      "district": "Thompson–Okanagan Region",
-      "regionId": "thompson-okanagan",
-      "workflowState": "Commenting Open",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3623",
-      "center": [
-        -119.79996351997903,
-        51.648915643031835
-      ],
-      "blockCount": 7,
-      "totalPlannedHa": 72.9,
-      "riskAssessment": {
-        "category": "moderate",
-        "label": "Moderate Sensitivity",
-        "rank": 2,
-        "reasons": [
-          "Targets a mature forest (134 yrs old)."
-        ],
-        "assessmentScope": "multi_block_screening",
-        "methodologyVersion": "v2.0",
-        "isPartialAssessment": false,
-        "wildfireQualified": false
-      },
-      "projectScreening": {
-        "totalBlocks": 7,
-        "sampledBlocks": 5,
-        "highestRiskCategory": "moderate",
-        "categoryCounts": {
-          "very_high": 0,
-          "high": 0,
-          "moderate": 2,
-          "low": 0,
-          "unassessed": 3
-        },
-        "minStandAge": 104,
-        "maxStandAge": 134,
-        "maxSiteIndex": 15.8,
-        "anyWildfireOverlap": false,
-        "anyDesignationOverlap": false
-      },
-      "forestPreview": {
-        "standAgeYears": 134,
-        "siteIndexMeters": 15.8,
-        "canopyHeightMeters": 28.7,
-        "becZone": "SBSmm"
-      }
-    },
-    {
-      "fomId": "3613",
-      "name": "R24569 AM6 SEC A-C",
-      "fspHolder": "THREE RIVERS COMMUNITY FOREST LIMITED PARTNERSHIP",
-      "district": "Cariboo Region",
-      "regionId": "cariboo",
-      "workflowState": "Commenting Open",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3613",
-      "center": [
-        -122.743275564,
-        53.010179288
-      ],
-      "riskAssessment": {
-        "category": "moderate",
-        "label": "Moderate Sensitivity",
-        "rank": 2,
-        "reasons": [
-          "Targets a mature forest (112 yrs old)."
-        ],
-        "assessmentScope": "centroid_screening",
-        "methodologyVersion": "v2.0",
-        "isPartialAssessment": false,
-        "wildfireQualified": false
-      },
-      "projectScreening": {
-        "totalBlocks": 1,
-        "sampledBlocks": 1,
-        "highestRiskCategory": "moderate",
-        "categoryCounts": {
-          "very_high": 0,
-          "high": 0,
-          "moderate": 1,
-          "low": 0,
-          "unassessed": 0
-        },
-        "minStandAge": 112,
-        "maxStandAge": 112,
-        "maxSiteIndex": 18.9,
-        "anyWildfireOverlap": false,
-        "anyDesignationOverlap": false
-      },
-      "forestPreview": {
-        "standAgeYears": 112,
-        "siteIndexMeters": 18.9,
-        "canopyHeightMeters": 25.9,
-        "becZone": "SBSdw2"
-      }
-    },
-    {
-      "fomId": "3601",
-      "name": "CISAA Forestry LLP",
-      "fspHolder": "CISAA FORESTRY LLP",
-      "district": "West Coast Region",
-      "regionId": "west-coast",
-      "workflowState": "Commenting Open",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3601",
-      "center": [
-        -124.75207232178869,
-        49.10025174884139
-      ],
-      "blockCount": 22,
-      "totalPlannedHa": 37.4,
-      "riskAssessment": {
-        "category": "moderate",
-        "label": "Moderate Sensitivity",
-        "rank": 2,
-        "reasons": [
-          "Overlaps a 2025 wildfire area (Fire #V71498) that burned after the 2025 forest survey — the recorded tree age (76 yrs) may be from before the fire. Check Satellite view to see if this is post-fire salvage logging."
-        ],
-        "assessmentScope": "multi_block_screening",
-        "methodologyVersion": "v2.0",
-        "isPartialAssessment": false,
-        "wildfireQualified": true
-      },
-      "projectScreening": {
-        "totalBlocks": 22,
-        "sampledBlocks": 5,
-        "highestRiskCategory": "moderate",
-        "categoryCounts": {
-          "very_high": 0,
-          "high": 0,
-          "moderate": 5,
-          "low": 0,
-          "unassessed": 0
-        },
-        "minStandAge": 14,
-        "maxStandAge": 76,
-        "maxSiteIndex": 33,
-        "anyWildfireOverlap": true,
-        "anyDesignationOverlap": false
-      },
-      "forestPreview": {
-        "standAgeYears": 76,
-        "siteIndexMeters": 25.2,
-        "canopyHeightMeters": 29.7,
-        "becZone": "CWHxm2"
-      }
-    },
-    {
-      "fomId": "3600",
-      "name": "FOM_3600_PG_037_FraserFlats_2026_11",
-      "fspHolder": "CARRIER LUMBER LTD.",
-      "district": "Omineca Region",
-      "regionId": "omineca",
-      "workflowState": "Commenting Open",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3600",
-      "center": [
-        -121.16514179691178,
-        53.838204072523276
-      ],
-      "blockCount": 2,
-      "totalPlannedHa": 40.7,
-      "riskAssessment": {
-        "category": "moderate",
-        "label": "Moderate Sensitivity",
-        "rank": 2,
-        "reasons": [
-          "Targets a mature forest (118 yrs old)."
-        ],
-        "assessmentScope": "multi_block_screening",
-        "methodologyVersion": "v2.0",
-        "isPartialAssessment": false,
-        "wildfireQualified": false
-      },
-      "projectScreening": {
-        "totalBlocks": 2,
-        "sampledBlocks": 2,
-        "highestRiskCategory": "moderate",
-        "categoryCounts": {
-          "very_high": 0,
-          "high": 0,
-          "moderate": 2,
-          "low": 0,
-          "unassessed": 0
-        },
-        "minStandAge": 100,
-        "maxStandAge": 118,
-        "maxSiteIndex": 15.1,
-        "anyWildfireOverlap": false,
-        "anyDesignationOverlap": false
-      },
-      "forestPreview": {
-        "standAgeYears": 118,
-        "siteIndexMeters": 14.6,
-        "canopyHeightMeters": 25.3,
-        "becZone": "ICHvk2"
-      }
-    },
-    {
-      "fomId": "3616",
-      "name": "K3W BC045",
-      "fspHolder": "THREE RIVERS COMMUNITY FOREST LIMITED PARTNERSHIP",
-      "district": "Cariboo Region",
-      "regionId": "cariboo",
-      "workflowState": "Commenting Open",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3616",
-      "center": [
-        -122.55662464411405,
-        52.95731956153855
-      ],
-      "blockCount": 4,
-      "totalPlannedHa": 50.8,
-      "riskAssessment": {
-        "category": "moderate",
-        "label": "Moderate Sensitivity",
-        "rank": 2,
-        "reasons": [
-          "Targets a mature forest (112 yrs old)."
-        ],
-        "assessmentScope": "multi_block_screening",
-        "methodologyVersion": "v2.0",
-        "isPartialAssessment": false,
-        "wildfireQualified": false
-      },
-      "projectScreening": {
-        "totalBlocks": 4,
-        "sampledBlocks": 4,
-        "highestRiskCategory": "moderate",
-        "categoryCounts": {
-          "very_high": 0,
-          "high": 0,
-          "moderate": 1,
-          "low": 2,
-          "unassessed": 1
-        },
-        "minStandAge": 62,
-        "maxStandAge": 112,
-        "maxSiteIndex": 19.3,
-        "anyWildfireOverlap": false,
-        "anyDesignationOverlap": false
-      },
-      "forestPreview": {
-        "standAgeYears": 112,
-        "siteIndexMeters": 19.3,
-        "canopyHeightMeters": 29.8,
-        "becZone": "SBSdw1"
-      }
-    },
-    {
-      "fomId": "3624",
-      "name": "Nahwitti River ",
-      "fspHolder": "RICHMOND PLYWOOD CORPORATION LIMITED",
-      "district": "West Coast Region",
-      "regionId": "west-coast",
-      "workflowState": "Commenting Open",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3624",
-      "center": [
-        -127.87154204917616,
-        50.7407607706249
-      ],
-      "blockCount": 20,
-      "totalPlannedHa": 57.8,
-      "riskAssessment": {
-        "category": "moderate",
-        "label": "Moderate Sensitivity",
-        "rank": 2,
-        "reasons": [
-          "Targets slow-growing old growth (328 yrs old; growing productivity 8.6 m)."
-        ],
-        "assessmentScope": "multi_block_screening",
-        "methodologyVersion": "v2.0",
-        "isPartialAssessment": false,
-        "wildfireQualified": false
-      },
-      "projectScreening": {
-        "totalBlocks": 20,
-        "sampledBlocks": 5,
-        "highestRiskCategory": "moderate",
-        "categoryCounts": {
-          "very_high": 0,
-          "high": 0,
-          "moderate": 4,
-          "low": 0,
-          "unassessed": 1
-        },
-        "minStandAge": 158,
-        "maxStandAge": 328,
-        "maxSiteIndex": 11.7,
-        "anyWildfireOverlap": false,
-        "anyDesignationOverlap": false
-      },
-      "forestPreview": {
-        "standAgeYears": 328,
-        "siteIndexMeters": 8.6,
-        "canopyHeightMeters": 23.2,
-        "becZone": "CWHvh1"
-      }
-    },
-    {
->>>>>>> 1d45330f9f42fcc4b4d35e742c15d5c41380c9d8
       "fomId": "3567",
       "name": "Salvage Harvest - LL50",
       "fspHolder": "LOGAN LAKE COMMUNITY FOREST CORPORATION",
@@ -3125,7 +2460,6 @@
       }
     },
     {
-<<<<<<< HEAD
       "fomId": "3613",
       "name": "R24569 AM6 SEC A-C",
       "fspHolder": "THREE RIVERS COMMUNITY FOREST LIMITED PARTNERSHIP",
@@ -3139,27 +2473,11 @@
         -122.743275564,
         53.010179288
       ],
-=======
-      "fomId": "3625",
-      "name": "West Fraser Mills Ltd",
-      "fspHolder": "WEST FRASER MILLS LTD.",
-      "district": "Skeena Region",
-      "regionId": "skeena",
-      "workflowState": "Commenting Open",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3625",
-      "center": [
-        -125.97336361073448,
-        54.16326033502059
-      ],
-      "blockCount": 25,
-      "totalPlannedHa": 706.5,
->>>>>>> 1d45330f9f42fcc4b4d35e742c15d5c41380c9d8
       "riskAssessment": {
         "category": "moderate",
         "label": "Moderate Sensitivity",
         "rank": 2,
         "reasons": [
-<<<<<<< HEAD
           "Targets a mature forest (112 yrs old)."
         ],
         "assessmentScope": "centroid_screening",
@@ -3216,17 +2534,10 @@
         ],
         "assessmentScope": "multi_block_screening",
         "methodologyVersion": "v2.1",
-=======
-          "Targets a mature forest (123 yrs old)."
-        ],
-        "assessmentScope": "multi_block_screening",
-        "methodologyVersion": "v2.0",
->>>>>>> 1d45330f9f42fcc4b4d35e742c15d5c41380c9d8
         "isPartialAssessment": false,
         "wildfireQualified": false
       },
       "projectScreening": {
-<<<<<<< HEAD
         "totalBlocks": 4,
         "sampledBlocks": 4,
         "highestRiskCategory": "moderate",
@@ -3332,15 +2643,11 @@
       },
       "projectScreening": {
         "totalBlocks": 22,
-=======
-        "totalBlocks": 25,
->>>>>>> 1d45330f9f42fcc4b4d35e742c15d5c41380c9d8
         "sampledBlocks": 5,
         "highestRiskCategory": "moderate",
         "categoryCounts": {
           "very_high": 0,
           "high": 0,
-<<<<<<< HEAD
           "moderate": 5,
           "low": 0,
           "unassessed": 0
@@ -3400,30 +2707,14 @@
         "minStandAge": 100,
         "maxStandAge": 118,
         "maxSiteIndex": 15.1,
-=======
-          "moderate": 4,
-          "low": 0,
-          "unassessed": 1
-        },
-        "minStandAge": 96,
-        "maxStandAge": 123,
-        "maxSiteIndex": 14.5,
->>>>>>> 1d45330f9f42fcc4b4d35e742c15d5c41380c9d8
         "anyWildfireOverlap": false,
         "anyDesignationOverlap": false
       },
       "forestPreview": {
-<<<<<<< HEAD
         "standAgeYears": 118,
         "siteIndexMeters": 14.6,
         "canopyHeightMeters": 25.3,
         "becZone": "ICHvk2"
-=======
-        "standAgeYears": 123,
-        "siteIndexMeters": 11.9,
-        "canopyHeightMeters": 18.3,
-        "becZone": "ESSFmc"
->>>>>>> 1d45330f9f42fcc4b4d35e742c15d5c41380c9d8
       }
     },
     {
@@ -3843,6 +3134,266 @@
       }
     },
     {
+      "fomId": "3631",
+      "name": "Skul'qalt Forestry Proposed Developments",
+      "fspHolder": "SKULQALT FORESTRY LIMITED PARTNERSHIP",
+      "district": "Thompson–Okanagan Region",
+      "regionId": "thompson-okanagan",
+      "workflowState": "Commenting Open",
+      "commentOpenDate": "2026-11-26",
+      "commentCloseDate": "2026-12-26",
+      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3631",
+      "center": [
+        -119.8483595634014,
+        49.385043840229656
+      ],
+      "blockCount": 1,
+      "totalPlannedHa": 168.8,
+      "riskAssessment": {
+        "category": "moderate",
+        "label": "Moderate Sensitivity",
+        "rank": 2,
+        "reasons": [
+          "Targets a mature forest (129 yrs old)."
+        ],
+        "assessmentScope": "centroid_screening",
+        "methodologyVersion": "v2.1",
+        "isPartialAssessment": false,
+        "wildfireQualified": false
+      },
+      "projectScreening": {
+        "totalBlocks": 1,
+        "sampledBlocks": 1,
+        "highestRiskCategory": "moderate",
+        "categoryCounts": {
+          "very_high": 0,
+          "high": 0,
+          "moderate": 1,
+          "low": 0,
+          "unassessed": 0
+        },
+        "minStandAge": 129,
+        "maxStandAge": 129,
+        "maxSiteIndex": 14,
+        "anyWildfireOverlap": false,
+        "anyDesignationOverlap": false
+      },
+      "forestPreview": {
+        "standAgeYears": 129,
+        "siteIndexMeters": 14,
+        "canopyHeightMeters": 21.2,
+        "becZone": "IDFdk1"
+      }
+    },
+    {
+      "fomId": "3619",
+      "name": "CG TFL23 CP 778 Halcyon– SB",
+      "fspHolder": "INTERFOR CORPORATION",
+      "district": "Kootenay–Boundary Region",
+      "regionId": "kootenay-boundary",
+      "workflowState": "Commenting Open",
+      "commentOpenDate": "2026-11-26",
+      "commentCloseDate": "2026-12-26",
+      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3619",
+      "center": [
+        -117.8903830062833,
+        50.47672090756399
+      ],
+      "blockCount": 12,
+      "totalPlannedHa": 113.3,
+      "riskAssessment": {
+        "category": "moderate",
+        "label": "Moderate Sensitivity",
+        "rank": 2,
+        "reasons": [
+          "Targets a mature forest (154 yrs old)."
+        ],
+        "assessmentScope": "multi_block_screening",
+        "methodologyVersion": "v2.1",
+        "isPartialAssessment": false,
+        "wildfireQualified": false
+      },
+      "projectScreening": {
+        "totalBlocks": 12,
+        "sampledBlocks": 5,
+        "highestRiskCategory": "moderate",
+        "categoryCounts": {
+          "very_high": 0,
+          "high": 0,
+          "moderate": 4,
+          "low": 0,
+          "unassessed": 1
+        },
+        "minStandAge": 133,
+        "maxStandAge": 154,
+        "maxSiteIndex": 19.1,
+        "anyWildfireOverlap": false,
+        "anyDesignationOverlap": false
+      },
+      "forestPreview": {
+        "standAgeYears": 154,
+        "siteIndexMeters": 18,
+        "canopyHeightMeters": 32.3,
+        "becZone": "ICHmw2"
+      }
+    },
+    {
+      "fomId": "3620",
+      "name": "CG TFL23 CP 740 Mohawk– SB",
+      "fspHolder": "INTERFOR CORPORATION",
+      "district": "Kootenay–Boundary Region",
+      "regionId": "kootenay-boundary",
+      "workflowState": "Commenting Open",
+      "commentOpenDate": "2026-11-26",
+      "commentCloseDate": "2026-12-26",
+      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3620",
+      "center": [
+        -117.66101970026271,
+        50.77321103680599
+      ],
+      "blockCount": 6,
+      "totalPlannedHa": 51.9,
+      "riskAssessment": {
+        "category": "moderate",
+        "label": "Moderate Sensitivity",
+        "rank": 2,
+        "reasons": [
+          "Targets a mature forest (174 yrs old)."
+        ],
+        "assessmentScope": "multi_block_screening",
+        "methodologyVersion": "v2.1",
+        "isPartialAssessment": false,
+        "wildfireQualified": false
+      },
+      "projectScreening": {
+        "totalBlocks": 6,
+        "sampledBlocks": 5,
+        "highestRiskCategory": "moderate",
+        "categoryCounts": {
+          "very_high": 0,
+          "high": 0,
+          "moderate": 3,
+          "low": 0,
+          "unassessed": 2
+        },
+        "minStandAge": 139,
+        "maxStandAge": 174,
+        "maxSiteIndex": 16.6,
+        "anyWildfireOverlap": false,
+        "anyDesignationOverlap": false
+      },
+      "forestPreview": {
+        "standAgeYears": 174,
+        "siteIndexMeters": 16.5,
+        "canopyHeightMeters": 32.9,
+        "becZone": "ICHwk1"
+      }
+    },
+    {
+      "fomId": "3629",
+      "name": "Revelstoke TSA Development ",
+      "fspHolder": "STELLA-JONES INC.",
+      "district": "Kootenay–Boundary Region",
+      "regionId": "kootenay-boundary",
+      "workflowState": "Commenting Open",
+      "commentOpenDate": "2026-11-26",
+      "commentCloseDate": "2026-12-26",
+      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3629",
+      "center": [
+        -118.00027557506569,
+        50.84160230091065
+      ],
+      "blockCount": 9,
+      "totalPlannedHa": 128.5,
+      "riskAssessment": {
+        "category": "moderate",
+        "label": "Moderate Sensitivity",
+        "rank": 2,
+        "reasons": [
+          "Targets a mature forest (180 yrs old)."
+        ],
+        "assessmentScope": "multi_block_screening",
+        "methodologyVersion": "v2.1",
+        "isPartialAssessment": false,
+        "wildfireQualified": false
+      },
+      "projectScreening": {
+        "totalBlocks": 9,
+        "sampledBlocks": 5,
+        "highestRiskCategory": "moderate",
+        "categoryCounts": {
+          "very_high": 0,
+          "high": 0,
+          "moderate": 2,
+          "low": 0,
+          "unassessed": 3
+        },
+        "minStandAge": 98,
+        "maxStandAge": 180,
+        "maxSiteIndex": 16.8,
+        "anyWildfireOverlap": false,
+        "anyDesignationOverlap": false
+      },
+      "forestPreview": {
+        "standAgeYears": 180,
+        "siteIndexMeters": 16.4,
+        "canopyHeightMeters": 31.3,
+        "becZone": "ICHmw3"
+      }
+    },
+    {
+      "fomId": "3637",
+      "name": "Adams 2026-10",
+      "fspHolder": "INTERFOR CORPORATION",
+      "district": "Thompson–Okanagan Region",
+      "regionId": "thompson-okanagan",
+      "workflowState": "Commenting Open",
+      "commentOpenDate": "2026-11-26",
+      "commentCloseDate": "2026-12-26",
+      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3637",
+      "center": [
+        -119.56840159104334,
+        51.32726251396183
+      ],
+      "blockCount": 7,
+      "totalPlannedHa": 161.1,
+      "riskAssessment": {
+        "category": "moderate",
+        "label": "Moderate Sensitivity",
+        "rank": 2,
+        "reasons": [
+          "Targets a mature forest (149 yrs old)."
+        ],
+        "assessmentScope": "multi_block_screening",
+        "methodologyVersion": "v2.1",
+        "isPartialAssessment": false,
+        "wildfireQualified": false
+      },
+      "projectScreening": {
+        "totalBlocks": 7,
+        "sampledBlocks": 5,
+        "highestRiskCategory": "moderate",
+        "categoryCounts": {
+          "very_high": 0,
+          "high": 0,
+          "moderate": 3,
+          "low": 2,
+          "unassessed": 0
+        },
+        "minStandAge": 64,
+        "maxStandAge": 149,
+        "maxSiteIndex": 26.9,
+        "anyWildfireOverlap": false,
+        "anyDesignationOverlap": false
+      },
+      "forestPreview": {
+        "standAgeYears": 149,
+        "siteIndexMeters": 14.8,
+        "canopyHeightMeters": 26.2,
+        "becZone": "ICHmw3"
+      }
+    },
+    {
       "fomId": "3577",
       "name": "EG6844-FOM",
       "fspHolder": "TOLKO INDUSTRIES LTD.",
@@ -4203,6 +3754,55 @@
       }
     },
     {
+      "fomId": "3630",
+      "name": "Skul'qalt Forestry Proposed Developments",
+      "fspHolder": "SKULQALT FORESTRY LIMITED PARTNERSHIP",
+      "district": "Thompson–Okanagan Region",
+      "regionId": "thompson-okanagan",
+      "workflowState": "Commenting Open",
+      "commentOpenDate": "2026-11-26",
+      "commentCloseDate": "2026-12-26",
+      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3630",
+      "center": [
+        -119.869247549,
+        49.329917192
+      ],
+      "riskAssessment": {
+        "category": "unassessed",
+        "label": "Unassessed",
+        "rank": 0,
+        "reasons": [
+          "No public provincial forest inventory is available at this spot (it may be private land, water, or alpine terrain)."
+        ],
+        "assessmentScope": "centroid_screening",
+        "methodologyVersion": "v2.1",
+        "isPartialAssessment": false
+      },
+      "projectScreening": {
+        "totalBlocks": 1,
+        "sampledBlocks": 1,
+        "highestRiskCategory": "unassessed",
+        "categoryCounts": {
+          "very_high": 0,
+          "high": 0,
+          "moderate": 0,
+          "low": 0,
+          "unassessed": 1
+        },
+        "minStandAge": null,
+        "maxStandAge": null,
+        "maxSiteIndex": null,
+        "anyWildfireOverlap": false,
+        "anyDesignationOverlap": false
+      },
+      "forestPreview": {
+        "standAgeYears": null,
+        "siteIndexMeters": null,
+        "canopyHeightMeters": null,
+        "becZone": null
+      }
+    },
+    {
       "fomId": "1036",
       "name": "Timber Sale Licence (TSL) TA2047",
       "fspHolder": "TIMBER SALES MANAGER CHINOOK",
@@ -4547,7 +4147,7 @@
         51.549053345
       ],
       "blockCount": 45,
-      "totalPlannedHa": 4337.4,
+      "totalPlannedHa": 4338.6,
       "riskAssessment": {
         "category": "unassessed",
         "label": "Unassessed",
@@ -19198,11 +18798,7 @@
           "Comment period closed; click proposal to inspect cutblocks."
         ],
         "assessmentScope": "unassessed",
-<<<<<<< HEAD
         "methodologyVersion": "v2.1",
-=======
-        "methodologyVersion": "v2.0",
->>>>>>> 1d45330f9f42fcc4b4d35e742c15d5c41380c9d8
         "isPartialAssessment": false
       }
     },
@@ -19419,30 +19015,6 @@
         ],
         "assessmentScope": "unassessed",
         "methodologyVersion": "v2.1",
-        "isPartialAssessment": false
-      }
-    },
-    {
-      "fomId": "3379",
-      "name": "CP 19",
-      "fspHolder": "KITWANCOOL NASS FOREST PRODUCTS INC.",
-      "district": "BC Natural Resource District",
-      "regionId": "skeena",
-      "workflowState": "Finalized",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3379",
-      "center": [
-        -129.139961599,
-        55.764540396
-      ],
-      "riskAssessment": {
-        "category": "unassessed",
-        "label": "Unassessed",
-        "rank": 0,
-        "reasons": [
-          "Comment period closed; click proposal to inspect cutblocks."
-        ],
-        "assessmentScope": "unassessed",
-        "methodologyVersion": "v2.0",
         "isPartialAssessment": false
       }
     },
@@ -38812,11 +38384,7 @@
           "Comment period closed; click proposal to inspect cutblocks."
         ],
         "assessmentScope": "unassessed",
-<<<<<<< HEAD
         "methodologyVersion": "v2.1",
-=======
-        "methodologyVersion": "v2.0",
->>>>>>> 1d45330f9f42fcc4b4d35e742c15d5c41380c9d8
         "isPartialAssessment": false
       }
     },
@@ -50029,16 +49597,16 @@
       }
     },
     {
-      "fomId": "3369",
-      "name": "Black Mount Logging Inc.",
-      "fspHolder": "BLACK MOUNT LOGGING INC.",
+      "fomId": "3406",
+      "name": "CG A20192 CP 313 Wilson Lake – OA",
+      "fspHolder": "INTERFOR CORPORATION",
       "district": "BC Natural Resource District",
-      "regionId": "south-coast",
-      "workflowState": "Finalized",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3369",
+      "regionId": "kootenay-boundary",
+      "workflowState": "Commenting Closed",
+      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3406",
       "center": [
-        -123.046349493,
-        50.13264769
+        -117.642657218,
+        50.23375448
       ],
       "riskAssessment": {
         "category": "unassessed",
@@ -50053,16 +49621,16 @@
       }
     },
     {
-      "fomId": "3406",
-      "name": "CG A20192 CP 313 Wilson Lake – OA",
-      "fspHolder": "INTERFOR CORPORATION",
+      "fomId": "3369",
+      "name": "Black Mount Logging Inc.",
+      "fspHolder": "BLACK MOUNT LOGGING INC.",
       "district": "BC Natural Resource District",
-      "regionId": "kootenay-boundary",
-      "workflowState": "Commenting Closed",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3406",
+      "regionId": "south-coast",
+      "workflowState": "Finalized",
+      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3369",
       "center": [
-        -117.642657218,
-        50.23375448
+        -123.046349493,
+        50.13264769
       ],
       "riskAssessment": {
         "category": "unassessed",
@@ -54517,30 +54085,6 @@
       }
     },
     {
-      "fomId": "3533",
-      "name": "CP 430",
-      "fspHolder": "COOPER CREEK CEDAR LTD.",
-      "district": "BC Natural Resource District",
-      "regionId": "kootenay-boundary",
-      "workflowState": "Commenting Closed",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3533",
-      "center": [
-        -116.998965719,
-        50.586243732
-      ],
-      "riskAssessment": {
-        "category": "unassessed",
-        "label": "Unassessed",
-        "rank": 0,
-        "reasons": [
-          "Comment period closed; click proposal to inspect cutblocks."
-        ],
-        "assessmentScope": "unassessed",
-        "methodologyVersion": "v2.0",
-        "isPartialAssessment": false
-      }
-    },
-    {
       "fomId": "3519",
       "name": "FOM 29",
       "fspHolder": "606546 B.C. LTD.",
@@ -55352,11 +54896,7 @@
           "Comment period closed; click proposal to inspect cutblocks."
         ],
         "assessmentScope": "unassessed",
-<<<<<<< HEAD
         "methodologyVersion": "v2.1",
-=======
-        "methodologyVersion": "v2.0",
->>>>>>> 1d45330f9f42fcc4b4d35e742c15d5c41380c9d8
         "isPartialAssessment": false
       }
     },
@@ -55453,30 +54993,6 @@
         ],
         "assessmentScope": "unassessed",
         "methodologyVersion": "v2.1",
-        "isPartialAssessment": false
-      }
-    },
-    {
-      "fomId": "3561",
-      "name": "2026-FM-10D",
-      "fspHolder": "TOLKO INDUSTRIES LTD.",
-      "district": "BC Natural Resource District",
-      "regionId": "thompson-okanagan",
-      "workflowState": "Finalized",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3561",
-      "center": [
-        -118.390528642,
-        50.375844788
-      ],
-      "riskAssessment": {
-        "category": "unassessed",
-        "label": "Unassessed",
-        "rank": 0,
-        "reasons": [
-          "Comment period closed; click proposal to inspect cutblocks."
-        ],
-        "assessmentScope": "unassessed",
-        "methodologyVersion": "v2.0",
         "isPartialAssessment": false
       }
     },
@@ -56091,30 +55607,6 @@
       "center": [
         -119.281024859,
         50.549724068
-      ],
-      "riskAssessment": {
-        "category": "unassessed",
-        "label": "Unassessed",
-        "rank": 0,
-        "reasons": [
-          "Comment period closed; click proposal to inspect cutblocks."
-        ],
-        "assessmentScope": "unassessed",
-        "methodologyVersion": "v2.1",
-        "isPartialAssessment": false
-      }
-    },
-    {
-      "fomId": "3499",
-      "name": "IL018 & IL019",
-      "fspHolder": "TLA'AMIN TIMBER PRODUCTS LTD.",
-      "district": "BC Natural Resource District",
-      "regionId": "south-coast",
-      "workflowState": "Commenting Closed",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3499",
-      "center": [
-        -124.513974562,
-        49.935524947
       ],
       "riskAssessment": {
         "category": "unassessed",
@@ -57665,6 +57157,30 @@
       }
     },
     {
+      "fomId": "3540",
+      "name": "Canfor Kootenay Division October 27th FOM",
+      "fspHolder": "CANADIAN FOREST PRODUCTS LTD.",
+      "district": "BC Natural Resource District",
+      "regionId": "kootenay-boundary",
+      "workflowState": "Commenting Closed",
+      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3540",
+      "center": [
+        -115.904814918,
+        49.728230333
+      ],
+      "riskAssessment": {
+        "category": "unassessed",
+        "label": "Unassessed",
+        "rank": 0,
+        "reasons": [
+          "Comment period closed; click proposal to inspect cutblocks."
+        ],
+        "assessmentScope": "unassessed",
+        "methodologyVersion": "v2.1",
+        "isPartialAssessment": false
+      }
+    },
+    {
       "fomId": "2733",
       "name": "TimberWest Quadra-Quinsam",
       "fspHolder": "TIMBERWEST FOREST CORP.",
@@ -57905,16 +57421,16 @@
       }
     },
     {
-      "fomId": "3183",
-      "name": "TA2853",
-      "fspHolder": "TIMBER SALES MANAGER KAMLOOPS",
+      "fomId": "3499",
+      "name": "IL018 & IL019",
+      "fspHolder": "TLA'AMIN TIMBER PRODUCTS LTD.",
       "district": "BC Natural Resource District",
-      "regionId": "thompson-okanagan",
+      "regionId": "south-coast",
       "workflowState": "Commenting Closed",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3183",
+      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3499",
       "center": [
-        -120.532795798,
-        49.86025623
+        -124.513974034,
+        49.935380163
       ],
       "riskAssessment": {
         "category": "unassessed",
@@ -57924,7 +57440,7 @@
           "Comment period closed; click proposal to inspect cutblocks."
         ],
         "assessmentScope": "unassessed",
-        "methodologyVersion": "v2.0",
+        "methodologyVersion": "v2.1",
         "isPartialAssessment": false
       }
     }
