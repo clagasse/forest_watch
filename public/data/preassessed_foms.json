@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "methodologyVersion": "v2.1",
-  "generatedAt": "2026-11-28T01:10:21.733Z",
+  "generatedAt": "2026-11-28T15:07:48.445Z",
   "source": "fom_api",
   "totalProjects": 2309,
-  "openProjectsCount": 77,
+  "openProjectsCount": 76,
   "assessedProjectsCount": 74,
   "projects": [
     {
@@ -3858,57 +3858,6 @@
       }
     },
     {
-      "fomId": "3563",
-      "name": "K4R CP 509",
-      "fspHolder": "CHINOOK COMFOR LIMITED",
-      "district": "Skeena Region",
-      "regionId": "skeena",
-      "workflowState": "Commenting Open",
-      "commentOpenDate": "2026-10-29",
-      "commentCloseDate": "2026-11-28",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3563",
-      "center": [
-        -126.09108618858482,
-        53.82766436209013
-      ],
-      "blockCount": 1,
-      "totalPlannedHa": 179.3,
-      "riskAssessment": {
-        "category": "unassessed",
-        "label": "Unassessed",
-        "rank": 0,
-        "reasons": [
-          "No public provincial forest inventory is available at this spot (it may be private land, water, or alpine terrain)."
-        ],
-        "assessmentScope": "centroid_screening",
-        "methodologyVersion": "v2.1",
-        "isPartialAssessment": false
-      },
-      "projectScreening": {
-        "totalBlocks": 1,
-        "sampledBlocks": 1,
-        "highestRiskCategory": "unassessed",
-        "categoryCounts": {
-          "very_high": 0,
-          "high": 0,
-          "moderate": 0,
-          "low": 0,
-          "unassessed": 1
-        },
-        "minStandAge": null,
-        "maxStandAge": null,
-        "maxSiteIndex": null,
-        "anyWildfireOverlap": false,
-        "anyDesignationOverlap": false
-      },
-      "forestPreview": {
-        "standAgeYears": null,
-        "siteIndexMeters": null,
-        "canopyHeightMeters": null,
-        "becZone": null
-      }
-    },
-    {
       "fomId": "3612",
       "name": "R24569 AM5 SEC A-U",
       "fspHolder": "THREE RIVERS COMMUNITY FOREST LIMITED PARTNERSHIP",
@@ -4350,8 +4299,8 @@
         -121.672555534,
         51.549053345
       ],
-      "blockCount": 44,
-      "totalPlannedHa": 4358.2,
+      "blockCount": 41,
+      "totalPlannedHa": 4311,
       "riskAssessment": {
         "category": "unassessed",
         "label": "Unassessed",
@@ -11796,6 +11745,8 @@
         -119.358632603,
         51.660708102
       ],
+      "blockCount": 4,
+      "totalPlannedHa": 53.2,
       "riskAssessment": {
         "category": "unassessed",
         "label": "Unassessed",
@@ -14670,8 +14621,6 @@
         -119.739871843,
         50.51772037
       ],
-      "blockCount": 1,
-      "totalPlannedHa": 22,
       "riskAssessment": {
         "category": "unassessed",
         "label": "Unassessed",
@@ -22309,6 +22258,30 @@
       "center": [
         -121.926336636,
         49.574393819
+      ],
+      "riskAssessment": {
+        "category": "unassessed",
+        "label": "Unassessed",
+        "rank": 0,
+        "reasons": [
+          "Comment period closed; click proposal to inspect cutblocks."
+        ],
+        "assessmentScope": "unassessed",
+        "methodologyVersion": "v2.1",
+        "isPartialAssessment": false
+      }
+    },
+    {
+      "fomId": "3563",
+      "name": "K4R CP 509",
+      "fspHolder": "CHINOOK COMFOR LIMITED",
+      "district": "BC Natural Resource District",
+      "regionId": "skeena",
+      "workflowState": "Commenting Closed",
+      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3563",
+      "center": [
+        -126.090611247,
+        53.827387246
       ],
       "riskAssessment": {
         "category": "unassessed",
@@ -43947,30 +43920,6 @@
       }
     },
     {
-      "fomId": "2749",
-      "name": "We Wai Kai Forestry LP 2026 - 2029 Development",
-      "fspHolder": "CAPE MUDGE FORESTRY LTD.",
-      "district": "BC Natural Resource District",
-      "regionId": "west-coast",
-      "workflowState": "Commenting Closed",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=2749",
-      "center": [
-        -125.492558476,
-        50.27109562
-      ],
-      "riskAssessment": {
-        "category": "unassessed",
-        "label": "Unassessed",
-        "rank": 0,
-        "reasons": [
-          "Comment period closed; click proposal to inspect cutblocks."
-        ],
-        "assessmentScope": "unassessed",
-        "methodologyVersion": "v2.1",
-        "isPartialAssessment": false
-      }
-    },
-    {
       "fomId": "2751",
       "name": "We Wai Kai Forestry LP 2026 - 2029 Development",
       "fspHolder": "CAPE MUDGE FORESTRY LTD.",
@@ -44077,6 +44026,30 @@
       "center": [
         -125.655310576,
         50.391339465
+      ],
+      "riskAssessment": {
+        "category": "unassessed",
+        "label": "Unassessed",
+        "rank": 0,
+        "reasons": [
+          "Comment period closed; click proposal to inspect cutblocks."
+        ],
+        "assessmentScope": "unassessed",
+        "methodologyVersion": "v2.1",
+        "isPartialAssessment": false
+      }
+    },
+    {
+      "fomId": "2749",
+      "name": "We Wai Kai Forestry LP 2026 - 2029 Development",
+      "fspHolder": "CAPE MUDGE FORESTRY LTD.",
+      "district": "BC Natural Resource District",
+      "regionId": "west-coast",
+      "workflowState": "Finalized",
+      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=2749",
+      "center": [
+        -125.494112177,
+        50.272426497
       ],
       "riskAssessment": {
         "category": "unassessed",
@@ -49827,16 +49800,16 @@
       }
     },
     {
-      "fomId": "3406",
-      "name": "CG A20192 CP 313 Wilson Lake – OA",
-      "fspHolder": "INTERFOR CORPORATION",
+      "fomId": "3369",
+      "name": "Black Mount Logging Inc.",
+      "fspHolder": "BLACK MOUNT LOGGING INC.",
       "district": "BC Natural Resource District",
-      "regionId": "kootenay-boundary",
-      "workflowState": "Commenting Closed",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3406",
+      "regionId": "south-coast",
+      "workflowState": "Finalized",
+      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3369",
       "center": [
-        -117.642657218,
-        50.23375448
+        -123.046349493,
+        50.13264769
       ],
       "riskAssessment": {
         "category": "unassessed",
@@ -49851,16 +49824,16 @@
       }
     },
     {
-      "fomId": "3369",
-      "name": "Black Mount Logging Inc.",
-      "fspHolder": "BLACK MOUNT LOGGING INC.",
+      "fomId": "3406",
+      "name": "CG A20192 CP 313 Wilson Lake – OA",
+      "fspHolder": "INTERFOR CORPORATION",
       "district": "BC Natural Resource District",
-      "regionId": "south-coast",
+      "regionId": "kootenay-boundary",
       "workflowState": "Finalized",
-      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3369",
+      "fomProjectUrl": "https://fom.nrs.gov.bc.ca/public/projects#splash?id=3406",
       "center": [
-        -123.046349493,
-        50.13264769
+        -117.642657218,
+        50.23375448
       ],
       "riskAssessment": {
         "category": "unassessed",
